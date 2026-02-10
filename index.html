@@ -9,6 +9,16 @@
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
     <style>
+        /* ========== 新增：花瓣效果样式 ========== */
+        .petal {
+            position: fixed;
+            pointer-events: none; /* 不阻挡鼠标事件 */
+            z-index: 9999; /* 花瓣显示在最上层 */
+            opacity: 0.8;
+            transition: opacity 1s ease-out, transform 2s ease-out;
+        }
+
+        /* ========== 原有样式保留 ========== */
         /* 图标容器居中+放大尺寸 */
         .links {
             display: flex;
@@ -166,7 +176,7 @@
     </div>
 
     <script>
-        // 背景动画
+        // 背景动画（原有）
         !function() {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
@@ -237,6 +247,61 @@
             }
             render();
         }();
+
+        // ========== 新增：鼠标花瓣跟随效果 ==========
+        (function() {
+            // 花瓣样式集合（可自定义颜色、形状）
+            const petalShapes = [
+                '🌸', '🌹', '🌷', '🌺', '💐', '🌼', '🥀' // 花瓣/花朵emoji
+            ];
+            const petalColors = [
+                '#ff99cc', '#ff6699', '#ff3366', '#cc6699', '#e63946', '#f1faee', '#a8dadc'
+            ];
+            const maxPetals = 20; // 最大同时显示花瓣数
+            let petalCount = 0;
+
+            // 监听鼠标移动事件
+            document.addEventListener('mousemove', function(e) {
+                // 限制花瓣数量，避免性能问题
+                if (petalCount >= maxPetals) return;
+
+                // 创建花瓣元素
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                
+                // 随机选择花瓣样式和颜色
+                const randomShape = petalShapes[Math.floor(Math.random() * petalShapes.length)];
+                const randomColor = petalColors[Math.floor(Math.random() * petalColors.length)];
+                
+                // 设置花瓣样式
+                petal.innerText = randomShape;
+                petal.style.color = randomColor;
+                petal.style.fontSize = `${12 + Math.random() * 10}px`; // 随机大小
+                petal.style.left = `${e.clientX - 8}px`; // 居中鼠标
+                petal.style.top = `${e.clientY - 8}px`;
+
+                // 随机动画参数
+                const randomRotate = Math.random() * 360; // 随机旋转角度
+                const randomX = (Math.random() - 0.5) * 40; // 横向偏移
+                const randomY = Math.random() * 60 + 20; // 纵向飘落距离
+
+                // 添加到页面
+                document.body.appendChild(petal);
+                petalCount++;
+
+                // 触发动画
+                setTimeout(() => {
+                    petal.style.opacity = 0;
+                    petal.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`;
+                }, 10);
+
+                // 动画结束后移除元素
+                setTimeout(() => {
+                    petal.remove();
+                    petalCount--;
+                }, 2000);
+            });
+        })();
     </script>
 </body>
 </html>
