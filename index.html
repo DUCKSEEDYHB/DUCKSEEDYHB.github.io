@@ -9,13 +9,14 @@
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        /* ========== 新增：花瓣效果样式 ========== */
+        /* ========== 花瓣效果样式（优化版） ========== */
         .petal {
             position: fixed;
             pointer-events: none; /* 不阻挡鼠标事件 */
             z-index: 9999; /* 花瓣显示在最上层 */
             opacity: 0.8;
-            transition: opacity 1s ease-out, transform 2s ease-out;
+            /* 缩短动画时长，解决延迟 */
+            transition: opacity 0.8s ease-out, transform 1.2s ease-out;
         }
 
         /* ========== 原有样式保留 ========== */
@@ -248,58 +249,54 @@
             render();
         }();
 
-        // ========== 新增：鼠标花瓣跟随效果 ==========
+        // ========== 优化版：鼠标花瓣跟随效果（无延迟） ==========
         (function() {
-            // 花瓣样式集合（可自定义颜色、形状）
-            const petalShapes = [
-                '🌸', '🌹', '🌷', '🌺', '💐', '🌼', '🥀' // 花瓣/花朵emoji
-            ];
-            const petalColors = [
-                '#ff99cc', '#ff6699', '#ff3366', '#cc6699', '#e63946', '#f1faee', '#a8dadc'
-            ];
-            const maxPetals = 20; // 最大同时显示花瓣数
+            // 简化花瓣样式，减少渲染压力
+            const petalShapes = ['🌸', '💫', '✨']; 
+            const petalColors = ['#ff99cc', '#00FFFF', '#9C27B0']; // 匹配博客色系
+            const maxPetals = 8; // 最大同时显示8个，降低性能消耗
             let petalCount = 0;
+            let lastGenerateTime = 0;
+            const generateInterval = 100; // 每100ms最多生成1个，限制频率
 
-            // 监听鼠标移动事件
             document.addEventListener('mousemove', function(e) {
-                // 限制花瓣数量，避免性能问题
+                const now = Date.now();
+                // 1. 限制生成频率，避免鼠标快速移动时卡顿
+                if (now - lastGenerateTime < generateInterval) return;
+                // 2. 限制最大数量，防止元素堆积
                 if (petalCount >= maxPetals) return;
 
-                // 创建花瓣元素
+                lastGenerateTime = now;
                 const petal = document.createElement('div');
                 petal.className = 'petal';
-                
-                // 随机选择花瓣样式和颜色
-                const randomShape = petalShapes[Math.floor(Math.random() * petalShapes.length)];
-                const randomColor = petalColors[Math.floor(Math.random() * petalColors.length)];
-                
-                // 设置花瓣样式
-                petal.innerText = randomShape;
-                petal.style.color = randomColor;
-                petal.style.fontSize = `${12 + Math.random() * 10}px`; // 随机大小
-                petal.style.left = `${e.clientX - 8}px`; // 居中鼠标
-                petal.style.top = `${e.clientY - 8}px`;
 
-                // 随机动画参数
-                const randomRotate = Math.random() * 360; // 随机旋转角度
-                const randomX = (Math.random() - 0.5) * 40; // 横向偏移
-                const randomY = Math.random() * 60 + 20; // 纵向飘落距离
+                // 简化随机逻辑，减少计算耗时
+                const randomIdx = Math.floor(Math.random() * petalShapes.length);
+                petal.innerText = petalShapes[randomIdx];
+                petal.style.color = petalColors[randomIdx];
+                petal.style.fontSize = `${10 + Math.random() * 6}px`; // 缩小尺寸，更轻盈
+                petal.style.left = `${e.clientX - 4}px`;
+                petal.style.top = `${e.clientY - 4}px`;
 
-                // 添加到页面
+                // 简化动画参数，缩短偏移距离
+                const randomRotate = Math.random() * 180;
+                const randomX = (Math.random() - 0.5) * 20;
+                const randomY = Math.random() * 30 + 10;
+
                 document.body.appendChild(petal);
                 petalCount++;
 
-                // 触发动画
-                setTimeout(() => {
+                // 用requestAnimationFrame触发动画，无延迟
+                requestAnimationFrame(() => {
                     petal.style.opacity = 0;
                     petal.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`;
-                }, 10);
+                });
 
-                // 动画结束后移除元素
+                // 缩短动画时长，快速回收元素
                 setTimeout(() => {
                     petal.remove();
                     petalCount--;
-                }, 2000);
+                }, 1200);
             });
         })();
     </script>
