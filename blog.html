@@ -9,6 +9,119 @@
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/css/style.css">
     <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        /* 隐藏移动端导航（默认只显示桌面端） */
+        .navbar-mobile {
+            display: none;
+        }
+        /* 响应式：小屏幕显示移动端导航，隐藏桌面端 */
+        @media (max-width: 768px) {
+            .navbar {
+                display: none;
+            }
+            .navbar-mobile {
+                display: block;
+            }
+        }
+        /* 导航栏通用样式 */
+        .navbar, .navbar-mobile {
+            padding: 20px 0;
+        }
+        .navbar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .menu {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+        .menu-item {
+            text-decoration: none;
+            color: #333;
+        }
+        .menu-item:hover {
+            color: #0F88EB;
+        }
+        /* 移动端菜单样式 */
+        .menu-toggle {
+            cursor: pointer;
+        }
+        #mobile-menu {
+            display: none;
+            flex-direction: column;
+            margin-top: 15px;
+            gap: 10px;
+        }
+        #mobile-menu.active {
+            display: flex;
+        }
+        /* 主题切换开关样式 */
+        .switch_default {
+            display: none;
+        }
+        .toggleBtn {
+            width: 40px;
+            height: 20px;
+            background: #ccc;
+            border-radius: 10px;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+        .toggleBtn::after {
+            content: '';
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            transition: left 0.3s;
+        }
+        .switch_default:checked + .toggleBtn {
+            background: #0F88EB;
+        }
+        .switch_default:checked + .toggleBtn::after {
+            left: 21px;
+        }
+        /* 个人信息区域样式 */
+        .intro {
+            text-align: center;
+            padding: 50px 0;
+        }
+        .avatar img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .nickname {
+            font-size: 24px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .description {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
         /* 图标容器居中+放大尺寸 */
         .links {
             display: flex;
@@ -48,6 +161,44 @@
             width: 36px !important;
             height: 36px !important;
         }
+        /* 页脚样式 */
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #999;
+            font-size: 14px;
+        }
+        /* 深色主题样式 */
+        .dark-theme {
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+        .dark-theme .menu-item {
+            color: #ddd;
+        }
+        .dark-theme .menu-item:hover {
+            color: #40a9ff;
+        }
+        .dark-theme .description {
+            color: #bbb;
+        }
+        .dark-theme .footer {
+            color: #888;
+        }
+        /* 画布层级调整 */
+        #bg-canvas, #petal-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+        #bg-canvas {
+            opacity: 0.5;
+        }
+        #petal-canvas {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -63,6 +214,7 @@
 
     <div class="wrapper">
         <header>
+            <!-- 桌面端导航 -->
             <nav class="navbar">
                 <div class="container">
                     <div class="navbar-header header-logo"><a href="/">Duckweed’s blog</a></div>
@@ -77,6 +229,7 @@
                 </div>
             </nav>
 
+            <!-- 移动端导航（默认隐藏） -->
             <nav class="navbar-mobile" id="nav-mobile">
                 <div class="container">
                     <div class="navbar-header">
@@ -94,6 +247,7 @@
                 </div>
             </nav>
         </header>
+        
         <script>
             // 移动端菜单
             function mobileBtn() {
@@ -166,7 +320,7 @@
     </div>
 
     <script>
-        // 背景动画
+        // 背景粒子动画
         !function() {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
@@ -236,6 +390,112 @@
                 requestAnimationFrame(render);
             }
             render();
+        }();
+
+        // 花瓣掉落动画
+        !function() {
+            // 创建花瓣画布
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.id = 'petal-canvas';
+            canvas.style.cssText = 'position:fixed;top:0;left:0;z-index:-1;opacity:0.8;pointer-events:none;';
+            document.body.appendChild(canvas);
+
+            // 适配窗口大小
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+
+            window.addEventListener('resize', () => {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            });
+
+            // 花瓣类
+            class Petal {
+                constructor() {
+                    // 随机位置
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height - height;
+                    // 随机大小
+                    this.size = Math.random() * 10 + 5;
+                    // 随机下落速度
+                    this.speed = Math.random() * 2 + 1;
+                    // 随机横向偏移
+                    this.sway = Math.random() * 1 - 0.5;
+                    // 随机旋转
+                    this.rotate = Math.random() * 360;
+                    this.rotateSpeed = Math.random() * 2 - 1;
+                    // 随机颜色（粉色系）
+                    const colors = ['#ff9999', '#ff6666', '#ffcccc', '#ff3366', '#ff99cc'];
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                }
+
+                // 更新花瓣位置和状态
+                update() {
+                    this.y += this.speed;
+                    this.x += this.sway;
+                    this.rotate += this.rotateSpeed;
+
+                    // 花瓣落到页面底部后重置
+                    if (this.y > height) {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height - height;
+                        this.size = Math.random() * 10 + 5;
+                        this.speed = Math.random() * 2 + 1;
+                    }
+                }
+
+                // 绘制花瓣
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotate * Math.PI / 180);
+                    ctx.fillStyle = this.color;
+                    
+                    // 绘制花瓣形状（八边形模拟花瓣）
+                    ctx.beginPath();
+                    for (let i = 0; i < 8; i++) {
+                        const angle = (i * Math.PI / 4);
+                        const radius = i % 2 === 0 ? this.size : this.size * 0.7;
+                        const x = radius * Math.cos(angle);
+                        const y = radius * Math.sin(angle);
+                        if (i === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // 创建花瓣数组
+            const petals = [];
+            const petalCount = 50; // 花瓣数量，可调整
+
+            // 初始化花瓣
+            for (let i = 0; i < petalCount; i++) {
+                petals.push(new Petal());
+            }
+
+            // 动画循环
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                petals.forEach(petal => {
+                    petal.update();
+                    petal.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            // 启动动画
+            animate();
         }();
     </script>
 </body>
