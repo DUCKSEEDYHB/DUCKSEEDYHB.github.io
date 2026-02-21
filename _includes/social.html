@@ -1,0 +1,47 @@
+<!-- _includes/social.html -->
+<ul class="social-media-list">
+  <!-- GitHub 图标：加载本地 SVG -->
+  {%- if site.github_username -%}
+  <li>
+    <a href="https://github.com/{{ site.github_username| cgi_escape | escape }}" target="_blank">
+      <!-- 本地 GitHub SVG -->
+      <img 
+        src="{{ '/assets/images/github.svg' | relative_url }}" 
+        alt="GitHub" 
+        class="social-icon"
+      >
+      <span class="username">{{ site.github_username| escape }}</span>
+    </a>
+  </li>
+  {%- endif -%}
+
+  <!-- 知乎图标：加载本地 SVG -->
+  {%- if site.zhihu_url -%}
+  <li>
+    <a href="{{ site.zhihu_url }}" target="_blank">
+      <!-- 本地知乎 SVG -->
+      <img 
+        src="{{ '/assets/images/zhihu.svg' | relative_url }}" 
+        alt="知乎" 
+        class="social-icon"
+      >
+      <span class="username">{{ site.zhihu_username | default: "知乎" | escape }}</span>
+    </a>
+  </li>
+  {%- endif -%}
+
+  <!-- B站图标：加载本地 SVG -->
+  {%- if site.bilibili_url -%}
+  <li>
+    <a href="{{ site.bilibili_url }}" target="_blank">
+      <!-- 本地 B站 SVG -->
+      <img 
+        src="{{ '/assets/images/bilibili.svg' | relative_url }}" 
+        alt="哔哩哔哩" 
+        class="social-icon"
+      >
+      <span class="username">{{ site.bilibili_username | default: "哔哩哔哩" | escape }}</span>
+    </a>
+  </li>
+  {%- endif -%}
+</ul>

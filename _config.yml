@@ -1,42 +1,53 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your whole blog, values
-# which you are expected to set up once and rarely edit after that. If you find
-# yourself editing this file very often, consider using Jekyll's data files
-# feature for the data you need to update frequently.
-#
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
-
-# Site settings
-# These are used to personalize your new site. If you look in the HTML files,
-# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
-# You can create any custom variable you would like, and they will be accessible
-# in the templates via {{ site.myvariable }}.
-
+# ===================== 站点核心配置 =====================
+# 站点标题（显示在导航栏/浏览器标签）
 title: Duckweed's Space
+# 联系邮箱（显示在页脚）
 email: 3071974740@qq.com
-description: >- # this means to ignore newlines until "baseurl:"
+# 站点描述（SEO/页脚简介）
+description: >-
   Duckweed的个人成长空间，记录编程学习、考研备考、读书思考的点滴
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://Duckweed-yhb.github.io" # 你的GitHub Pages地址
-github_username: Duckweed-yhb
-bilibili_username: 陌上花开我可归矣 # 替换为你的B站账号（比如：UID或昵称）
-bilibili_url: "https://space.bilibili.com/3546703303019495?spm_id_from=333.337.0.0" # 替换为你的B站空间链接
+# 站点基础路径（GitHub Pages 留空即可）
+baseurl: ""
+# 站点完整域名（替换为你的GitHub Pages地址）
+url: "https://Duckweed-yhb.github.io"
+# 时区（可选，国内建议设置）
+timezone: Asia/Shanghai
 
-# Build settings
+# ===================== 社交账号配置 =====================
+# 纯本地SVG图标使用，无需依赖主题内置社交链接
+github_username: Duckweed-yhb
+zhihu_username: 待价而沽
+zhihu_url: "https://www.zhihu.com/people/54-62-1-34-68"
+bilibili_username: 陌上花开我可归矣
+bilibili_url: "https://space.bilibili.com/3546703303019495?spm_id_from=333.337.0.0"
+
+# ===================== 主题与插件配置 =====================
+# 使用minima主题
 theme: minima
+# 启用的插件（仅保留必要的feed插件）
 plugins:
   - jekyll-feed
 
-# Exclude from processing.
-# The following items will not be processed, by default.
-# Any item listed under the `exclude:` key here will be automatically added to
-# the internal "default list".
-#
-# Excluded items can be processed by explicitly listing the directories or
-# their entries' file path in the `include:` list.
-#
+# ===================== 内容配置 =====================
+# 文章默认布局
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+
+# 文章排序方式（按日期倒序）
+paginate: 5 # 首页显示5篇文章
+paginate_path: "/page/:num/"
+
+# ===================== 排除文件 =====================
+# Jekyll编译时忽略的文件/目录
 exclude:
   - .sass-cache/
   - .jekyll-cache/
@@ -44,13 +55,20 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - node_modules/
-  - vendor/bundle/
-  - vendor/cache/
-  - vendor/gems/
-  - vendor/ruby/
+  - vendor/
+  - README.md
+  - LICENSE
 
-# 自定义社交链接（替换Twitter为B站）
+# ===================== Minima主题自定义 =====================
+# 关闭主题内置的社交链接（避免和我们的本地SVG冲突）
+# 仅保留兼容配置，实际渲染用_includes/social.html
 minima:
-  social_links:
-    - { platform: github, user_url: "https://github.com/Duckweed-yhb" }
-    - { platform: bilibili, user_url: "https://space.bilibili.com/你的B站UID" } # 替换为你的B站链接
+  social_links: [] # 清空内置社交链接，彻底避免冲突
+  # 可选：主题配色（如需调整可取消注释）
+  # skin: classic
+
+# ===================== 编码与格式 =====================
+# 站点编码
+encoding: utf-8
+# 日期格式
+date_format: "%Y-%m-%d %H:%M"
