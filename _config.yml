@@ -17,8 +17,8 @@ root: /  # 根路径，保证静态资源（背景图）能找到
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
-  trailing_index: true
-  trailing_html: true
+  trailing_index: false  # 关闭index.html后缀，适配GitHub Pages
+  trailing_html: false   # 关闭.html后缀，更简洁
 
 # Directory 目录配置（默认即可）
 source_dir: source
@@ -87,12 +87,12 @@ include:
 exclude:
 ignore:
 
-# Extensions 主题配置（必须是landscape）
-theme: landscape
+# Extensions 主题配置（使用npm安装的主题，避免本地文件缺失）
+theme: hexo-theme-landscape
 
-# Deployment 部署配置（核心！部署到GitHub）
+# Deployment 部署配置（核心！改用gh-pages分支，避开Jekyll冲突）
 deploy:
   type: git
   repo: https://github.com/DUCKSEEDYHB/DUCKSEEDYHB.github.io.git
-  branch: main
+  branch: gh-pages  # 关键修改：部署到gh-pages分支，而非main
   message: "Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}"
