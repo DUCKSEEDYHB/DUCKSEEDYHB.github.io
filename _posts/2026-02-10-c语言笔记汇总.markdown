@@ -3,13 +3,14 @@ layout: post
 title:  "C语言核心知识总结（共8章 · 含代码示例+详细解释）"
 date:   2026-02-10 16:20:37 +0800
 categories: [计算机科学与技术, 程序设计]
-tags: [C语言, 编程基础]
+tags: [C语言, 编程基础, 入门教程]
 author: Duckweed
 permalink: /c-language-notes/
 ---
-{% raw %} <!-- 开启Liquid忽略 -->
+{% raw %} <!-- 开启Liquid忽略，避免Jekyll解析代码中的{} -->
 
 # C语言核心知识总结（共8章 · 含代码示例+详细解释）
+> 适合入门/复习：覆盖C语言核心语法，每章附可直接运行的代码+易错点解析
 
 ## 第1章 数据类型与基本运算
 ### 核心知识点（补充代码示例）
@@ -17,32 +18,33 @@ permalink: /c-language-notes/
 #include <stdio.h>
 int main() {
     // 1. 基本数据类型定义与初始化
-    int a = 10;          // 整型（4字节）
+    int a = 10;          // 整型（4字节，范围：-2^31 ~ 2^31-1）
     short b = 20;        // 短整型（2字节）
-    long c = 100000L;    // 长整型（加L标识长常量）
-    float d = 3.14f;     // 单精度浮点（加f标识）
-    double e = 3.1415926;// 双精度浮点（默认浮点型）
-    char f = 'A';        // 字符型（存储ASCII码）
+    long c = 100000L;    // 长整型（4/8字节，加L标识长常量）
+    float d = 3.14f;     // 单精度浮点（4字节，加f避免默认double）
+    double e = 3.1415926;// 双精度浮点（8字节，默认浮点型）
+    char f = 'A';        // 字符型（1字节，存储ASCII码）
     const int g = 5;     // const修饰的只读常量（不可修改）
 
     // 2. 运算符示例
     int x = 7, y = 3;
     printf("算术运算：7/3 = %d，7%%3 = %d\n", x/y, x%y); // 整除2，取余1
-    printf("自增运算：x++ = %d，++x = %d\n", x++, ++x); // 先取值7，再自增；先自增9，再取值9
-    printf("逻辑运算：(1>0)&&(2<1) = %d\n", (1>0)&&(2<1)); // 逻辑与，结果0（假）
+    printf("自增运算：x++ = %d，++x = %d\n", x++, ++x); // 7，9（x最终为9）
+    printf("逻辑运算：(1>0)&&(2<1) = %d\n", (1>0)&&(2<1)); // 0（假，逻辑与短路）
 
     // 3. 类型转换
-    int h = (int)3.99;   // 强制转换：截断小数，h=3
+    int h = (int)3.99;   // 强制转换：截断小数，h=3（非四舍五入）
     double i = 5 + 3.2;  // 隐式转换：int→double，结果8.2
     printf("强制转换：%d，隐式转换：%.1f\n", h, i);
 
     return 0;
 }
 ```
-### 代码解释
-- `const` 常量：定义后无法修改（如 `g=6;` 会报错）；
-- 算术运算：`/` 对整数是整除，`%` 仅适用于整数；
-- 类型转换：隐式转换会自动提升为精度更高的类型，强制转换需手动指定且可能丢失精度。
+### 代码解释 & 易错点
+- `const` 常量：定义后无法修改（如 `g=6;` 编译报错），建议用于固定值（如π）；
+- 算术运算：`/` 对整数是**整除**（7/3=2），`%` 仅适用于整数（负数取余符号随被除数）；
+- 类型转换：隐式转换自动提升精度（低→高），强制转换可能丢失精度（如3.99→3）；
+- 自增运算：`x++`（后自增，先取值再+1）、`++x`（先+1再取值）。
 
 ---
 
@@ -54,23 +56,25 @@ int main() {
     // 1. 顺序执行：输入→计算→输出
     int num1, num2, sum;
     printf("请输入两个整数（空格分隔）：");
-    scanf("%d %d", &num1, &num2); // &取地址，必须加
+    scanf("%d %d", &num1, &num2); // &取地址符，整型/字符型必须加
     sum = num1 + num2;
     printf("两数之和：%d\n", sum);
 
-    // 2. 字符输入输出
+    // 2. 字符输入输出（处理回车符）
     char ch;
     printf("请输入一个字符：");
-    ch = getchar(); // 读取单个字符（包括回车）
-    putchar(ch);    // 输出单个字符
-    printf(" (ASCII码：%d)\n", ch); // 字符本质是ASCII码
+    getchar(); // 吸收scanf残留的回车符
+    ch = getchar(); // 读取单个字符
+    putchar(ch);    
+    printf(" (ASCII码：%d)\n", (int)ch); // 强制转换看ASCII码
 
     return 0;
 }
 ```
-### 代码解释
-- `scanf` 注意事项：格式符与变量类型匹配，整型/字符型需加 `&`，字符串数组名无需加；
-- `getchar`：会读取回车符（如连续调用需用 `getchar()` 吸收回车）。
+### 代码解释 & 易错点
+- `scanf` 注意：格式符与变量类型匹配（%d→int，%c→char），字符串数组名无需加`&`；
+- 回车符问题：`scanf` 读取后会残留回车，后续`getchar`会读取到空字符，需用`getchar()`吸收；
+- `putchar`：仅输出单个字符，等价于`printf("%c", ch)`。
 
 ---
 
@@ -80,11 +84,13 @@ int main() {
 #include <stdio.h>
 int main() {
     int score;
-    printf("输入成绩：");
+    printf("输入成绩（0-100）：");
     scanf("%d", &score);
 
-    // 1. if多分支
-    if (score >= 90) {
+    // 1. if多分支（范围判断）
+    if (score > 100 || score < 0) {
+        printf("输入无效！\n");
+    } else if (score >= 90) {
         printf("优秀\n");
     } else if (score >= 60) {
         printf("及格\n");
@@ -95,23 +101,24 @@ int main() {
     // 2. switch语句（整型/字符型表达式）
     char grade = 'B';
     switch (grade) {
-        case 'A': printf("90-100\n"); break; // break跳出分支，否则穿透
+        case 'A': printf("90-100\n"); break; // break跳出，避免穿透
         case 'B': printf("80-89\n"); break;
         case 'C': printf("70-79\n"); break;
-        default: printf("不及格\n"); // 匹配不到时执行
+        default: printf("不及格\n"); // 无匹配时执行
     }
 
-    // 3. 三目运算符
-    int num1 = 10, num2 = 20; // 补充定义变量，避免未定义报错
+    // 3. 三目运算符（简化if-else）
+    int num1 = 10, num2 = 20;
     int max = (num1 > num2) ? num1 : num2;
     printf("最大值：%d\n", max);
 
     return 0;
 }
 ```
-### 代码解释
-- `switch` 关键点：表达式只能是整型/字符型，`case` 后是常量，缺少 `break` 会“穿透”到下一个 `case`；
-- 三目运算符：等价于简单的if-else，适合赋值场景。
+### 代码解释 & 易错点
+- `switch` 限制：表达式只能是整型/字符型（不能是浮点型），`case` 后必须是常量（如10、'A'）；
+- `break` 作用：缺少则会“穿透”（执行当前case后继续执行下一个case）；
+- 三目运算符：`条件 ? 真值 : 假值`，适合简单赋值，不可替代复杂分支。
 
 ---
 
@@ -122,19 +129,19 @@ int main() {
 int main() {
     int i, sum = 0;
 
-    // 1. for循环（最常用，适合已知次数）
+    // 1. for循环（已知次数，最常用）
     for (i = 1; i <= 10; i++) {
-        sum += i; // 累加1-10
-        if (i == 5) continue; // 跳过i=5的本次循环（sum仍加5，仅跳过后续代码）
+        if (i == 5) continue; // 跳过i=5的后续代码（sum仍加5）
+        sum += i; 
         // if (i == 8) break; // 跳出循环，sum=1+2+...+7=28
     }
-    printf("1-10累加和：%d\n", sum); // 无break时结果55
+    printf("1-10累加和（跳过i=5）：%d\n", sum); // 50（55-5）
 
-    // 2. while循环（适合未知次数）
+    // 2. while循环（未知次数）
     int n = 0;
     while (n < 5) {
         printf("n = %d\n", n);
-        n++;
+        n++; // 必须更新，否则死循环
     }
 
     // 3. do-while循环（至少执行一次）
@@ -142,15 +149,16 @@ int main() {
     do {
         printf("m = %d\n", m);
         m++;
-    } while (m < 5); // 条件不满足，但仍执行1次
+    } while (m < 5); // 条件假，但仍执行1次
 
     return 0;
 }
 ```
-### 代码解释
-- `for` 循环三部分：初始化只执行1次，条件为真执行循环体，更新语句在循环体后执行；
-- `continue` vs `break`：`continue` 跳过本次循环剩余代码，`break` 直接跳出本层循环；
-- `do-while`：先执行循环体，再判断条件，适合“至少执行一次”的场景（如输入验证）。
+### 代码解释 & 易错点
+- `for` 循环：初始化只执行1次，条件为真执行循环体，更新语句在循环体后执行；
+- 死循环：`while(1)` 是常用死循环，需用`break`退出；
+- `continue` vs `break`：`continue` 跳过本次循环，`break` 跳出本层循环；
+- `do-while`：适合“输入验证”（如必须输入合法值才退出）。
 
 ---
 
@@ -162,14 +170,15 @@ int main() {
 int main() {
     // 1. 一维数组
     int arr[5] = {1,2,3,4,5}; // 初始化，大小可省略（自动推导）
-    // 遍历数组
+    printf("一维数组：");
     for (int i = 0; i < 5; i++) {
         printf("%d ", arr[i]); // 下标从0开始，arr[4]是最后一个元素
     }
     printf("\n");
 
-    // 2. 二维数组
-    int arr2[2][3] = {{1,2,3}, {4,5,6}}; // 2行3列
+    // 2. 二维数组（2行3列）
+    int arr2[2][3] = {{1,2,3}, {4,5,6}};
+    printf("二维数组：\n");
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 3; j++) {
             printf("%d ", arr2[i][j]);
@@ -181,16 +190,17 @@ int main() {
     char str[20] = "hello"; // 自动加'\0'结束符
     printf("字符串长度：%zu\n", strlen(str)); // 5（不含'\0'）
     printf("数组大小：%zu\n", sizeof(str));   // 20（数组总字节数）
-    strcpy(str, "world"); // 字符串复制，覆盖原内容
+    strcpy(str, "world"); // 字符串复制，覆盖原内容（需确保数组足够大）
     printf("复制后：%s\n", str); // world
 
     return 0;
 }
 ```
-### 代码解释
-- 数组下标：从0开始，越界访问会导致程序崩溃（如 `arr[5]` 超出一维数组范围）；
-- 字符串关键：`strlen` 计算有效长度（不含 `'\0'`），`sizeof` 计算数组总字节数；
-- 二维数组：按行存储，`arr2[i][j]` 表示第i行第j列元素。
+### 代码解释 & 易错点
+- 数组越界：`arr[5]` 超出一维数组范围（下标0-4），会导致程序崩溃/数据错乱；
+- 字符串结束符：`'\0'` 是字符串标志，手动赋值需加（如`char str[] = {'h','e','\0'}`）；
+- `strlen` vs `sizeof`：`strlen` 算有效长度，`sizeof` 算数组总字节数；
+- 二维数组：`arr2[i][j]` 等价于`*(*(arr2+i)+j)`，按行存储。
 
 ---
 
@@ -203,14 +213,14 @@ int main() {
     char str1[20] = "hello";
     char str2[20] = "world";
 
-    // 1. 字符串拼接
+    // 1. 字符串拼接（确保str1足够大）
     strcat(str1, str2); // str1 = "helloworld"
     printf("拼接后：%s\n", str1);
 
-    // 2. 字符串比较
-    int cmp = strcmp("apple", "banana"); // 按ASCII码比较，apple<banana，返回负数
+    // 2. 字符串比较（按ASCII码逐字符比）
+    int cmp = strcmp("apple", "banana"); 
     if (cmp < 0) {
-        printf("apple < banana\n");
+        printf("apple < banana\n"); // a(97) < b(98)，返回负数
     } else if (cmp > 0) {
         printf("apple > banana\n");
     } else {
@@ -218,36 +228,40 @@ int main() {
     }
 
     // 3. 查找字符/子串
-    char *p1 = strchr(str1, 'w'); // 查找'w'首次出现位置，返回指针
+    char *p1 = strchr(str1, 'w'); // 查找'w'首次出现位置
     char *p2 = strstr(str1, "or"); // 查找子串"or"首次出现位置
-    printf("字符w位置：%s\n", p1); // world（从w开始输出）
-    printf("子串or位置：%s\n", p2); // orld
+    printf("字符w位置：%s\n", p1 ? p1 : "未找到"); // 防止NULL指针
+    printf("子串or位置：%s\n", p2 ? p2 : "未找到");
 
-    // 4. 安全输入（替代gets）
+    // 4. 安全输入（替代gets，避免溢出）
     char input[50];
     printf("输入字符串（可含空格）：");
-    fgets(input, sizeof(input), stdin); // 限制长度，避免溢出
-    printf("输入内容：%s", input); // fgets会读取回车符
+    fgets(input, sizeof(input), stdin); // 限制长度
+    input[strcspn(input, "\n")] = '\0'; // 去除fgets读取的回车符
+    printf("输入内容：%s\n", input);
 
     return 0;
 }
 ```
-### 代码解释
-- `strcmp` 返回值：负数（前<后）、0（相等）、正数（前>后）；
-- `strchr/strstr`：找到返回对应指针，未找到返回`NULL`；
-- `fgets` 优点：指定最大读取长度，避免缓冲区溢出，是`gets`的安全替代方案。
+### 代码解释 & 易错点
+- `strcmp` 返回值：负数（前<后）、0（相等）、正数（前>后），不可用`if(str1 == str2)`比较字符串；
+- `strchr/strstr`：未找到返回`NULL`，直接打印会崩溃，需先判断；
+- `fgets` 优化：会读取回车符，用`strcspn`去除末尾的`\n`；
+- 字符串函数安全：`strcpy/strcat` 需确保目标数组足够大，否则溢出。
 
 ---
 
-## 第7章 指针
+## 第7章 指针（C语言核心）
 ### 核心知识点（补充代码示例）
 ```c
 #include <stdio.h>
 #include <string.h>
-// 函数传指针示例：交换两个数
+
+// 函数传指针示例：交换两个数（传址调用）
 void swap(int *a, int *b) {
-    int temp = *a; // 解引用，取a指向的值
-    *a = *b;       // 修改a指向的变量值
+    if (a == NULL || b == NULL) return; // 防止空指针
+    int temp = *a; 
+    *a = *b;       
     *b = temp;
 }
 
@@ -257,24 +271,26 @@ int main() {
     int *p = &num; // p存储num的地址
     printf("num值：%d，地址：%p\n", num, &num);
     printf("p指向的值：%d，p自身地址：%p\n", *p, &p);
-    *p = 20; // 修改变量值，num变为20
+    *p = 20; // 解引用修改num值，num变为20
     printf("修改后num：%d\n", num);
 
     // 2. 指针与数组
     int arr[5] = {1,2,3,4,5};
-    int *p_arr = arr; // 数组名=首元素地址，等价于&arr[0]
+    int *p_arr = arr; // 数组名=首元素地址（等价于&arr[0]）
+    printf("数组遍历（指针）：");
     for (int i = 0; i < 5; i++) {
         printf("%d ", *(p_arr + i)); // 等价于arr[i]
     }
     printf("\n");
 
     // 3. 指针与字符串
-    char *str = "hello"; // 指针指向字符串常量首地址
-    printf("字符串首字符：%c\n", *str); // h
+    const char *str = "hello"; // 字符串常量（只读，加const避免误修改）
+    printf("字符串首字符：%c\n", *str); 
     // str[0] = 'H'; // 错误：字符串常量不可修改
-    char str_arr[] = "hello"; // 字符数组可修改
+    
+    char str_arr[] = "hello"; // 字符数组（可修改）
     char *p_str = str_arr;
-    *p_str = 'H'; // 修改首字符为H
+    *p_str = 'H'; 
     printf("修改后：%s\n", str_arr); // Hello
 
     // 4. 函数传指针
@@ -282,18 +298,19 @@ int main() {
     swap(&x, &y); // 传地址，实参会被修改
     printf("交换后：x=%d, y=%d\n", x, y); // 10,5
 
-    // 5. 二级指针（可选）
+    // 5. 二级指针（进阶）
     int **pp = &p; // pp指向指针p的地址
     printf("二级指针取值：%d\n", **pp); // 20（等价于*p=num=20）
 
     return 0;
 }
 ```
-### 代码解释
-- 指针核心：`&`取地址，`*`解引用（访问指向的值）；
-- 数组与指针：`arr[i]` 等价于 `*(arr+i)`，指针遍历数组更高效；
-- 字符串常量：`char *str = "hello"` 指向只读区，不可修改；字符数组可修改；
-- 函数传指针：实现“传址调用”，能修改主函数的变量（值传递做不到）。
+### 代码解释 & 易错点
+- 指针核心：`&`取地址，`*`解引用（访问指向的值），指针大小固定（32位=4字节，64位=8字节）；
+- 数组与指针：`arr[i]` 等价于`*(arr+i)`，指针遍历数组更高效（少一次下标计算）；
+- 字符串常量：`const char *str = "hello"` 指向只读内存区，修改会崩溃；
+- 空指针：函数传参需判断`NULL`，避免解引用空指针导致程序崩溃；
+- 传址调用：函数修改主函数变量的唯一方式（值传递仅拷贝）。
 
 ---
 
@@ -302,60 +319,73 @@ int main() {
 ```c
 #include <stdio.h>
 #include <string.h>
-// 1. 函数声明（原型）
+
+// 1. 函数声明（原型）：定义在main后需先声明
 int add(int a, int b);
-// 递归函数：求阶乘
+
+// 递归函数：求阶乘（n! = n*(n-1)!）
 int factorial(int n) {
-    if (n == 1) return 1; // 基线条件（终止递归）
-    return n * factorial(n-1); // 递归调用
+    if (n < 0) return -1; // 异常处理：负数无阶乘
+    if (n == 0 || n == 1) return 1; // 基线条件（终止递归）
+    return n * factorial(n-1); // 递归调用（逐步拆解）
 }
 
-// 2. 结构体定义
+// 2. 结构体定义（自定义数据类型）
 struct Student {
-    char name[20];
-    int age;
-    float score;
+    char name[20];  // 姓名
+    int age;        // 年龄
+    float score;    // 成绩
 };
 
 int main() {
     // 函数调用
     int res = add(3,5);
     printf("3+5=%d\n", res);
-    printf("5的阶乘：%d\n", factorial(5)); // 120
+    
+    int n = 5;
+    int fac = factorial(n);
+    if (fac == -1) {
+        printf("输入无效！\n");
+    } else {
+        printf("%d的阶乘：%d\n", n, fac); // 120
+    }
 
     // 结构体使用
     struct Student s1;
-    strcpy(s1.name, "张三"); // 字符串赋值需用strcpy
+    strcpy(s1.name, "张三"); // 字符串成员需用strcpy赋值
     s1.age = 18;
     s1.score = 90.5;
     printf("学生1：%s，%d岁，%.1f分\n", s1.name, s1.age, s1.score);
 
-    // 结构体指针
+    // 结构体指针（常用，节省内存）
     struct Student *p_s = &s1;
-    printf("指针访问：%s，%d岁\n", p_s->name, p_s->age); // ->替代(*p_s).name
+    printf("指针访问：%s，%d岁\n", p_s->name, p_s->age); // -> 替代(*p_s).name
 
     // 结构体数组
     struct Student s_arr[2] = {
         {"李四", 19, 88.0},
         {"王五", 20, 95.5}
     };
+    printf("结构体数组：\n");
     for (int i = 0; i < 2; i++) {
-        printf("学生%d：%s\n", i+2, s_arr[i].name);
+        printf("学生%d：%s，%.1f分\n", i+2, s_arr[i].name, s_arr[i].score);
     }
 
     return 0;
 }
+
 // 函数定义
 int add(int a, int b) {
     return a + b;
 }
 ```
-### 代码解释
-- 递归函数：必须有**基线条件**（如`n==1`），否则会无限递归导致栈溢出；
-- 结构体注意：字符串成员不能直接用`=`赋值，需用`strcpy`；
-- 结构体指针：`->` 是指针访问成员的简写，等价于 `(*指针).成员`；
-- 函数声明：若函数定义在`main`之后，需先声明原型，否则编译报错。
+### 代码解释 & 易错点
+- 递归函数：必须有**基线条件**（如`n==1`），否则栈溢出；递归深度不宜过大（如n>1000）；
+- 结构体赋值：字符串成员不能直接`=`（如`s1.name = "张三"` 报错），需用`strcpy`；
+- 结构体指针：`->` 是指针访问成员的简写，大型结构体用指针更高效（避免拷贝）；
+- 函数声明：若函数定义在`main`之后，必须先声明原型，否则编译报错。
 
-{% endraw %} <!-- 闭合Liquid忽略标签，关键！ -->
+{% endraw %} <!-- 闭合Liquid忽略标签 -->
+
 
 

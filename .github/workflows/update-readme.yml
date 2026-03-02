@@ -1,0 +1,47 @@
+name: Auto Update README (Jekyll Blog)
+
+# 触发条件：
+# 1. 推送博客文件到 _posts 目录
+# 2. 手动触发
+# 3. 每天定时更新（可选）
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - '_posts/**/*.md'
+      - '_posts/**/*.markdown'
+      - 'templates/README.template.md'
+      - 'scripts/generate_readme.py'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 0 点更新（可选）
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 授予写入权限（关键）
+    steps:
+      - name: 拉取仓库代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 拉取完整历史
+        
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+        
+      - name: 安装依赖
+        run: pip install pyyaml  # 解析 Jekyll Front Matter 必需
+        
+      - name: 生成 README
+        run: python scripts/generate_readme.py
+        
+      - name: 提交更新
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto update README from Jekyll posts"
+          file_pattern: "README.md"
+          branch: main  # 你的主分支（master 则改为 master）
