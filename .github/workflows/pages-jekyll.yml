@@ -1,0 +1,66 @@
+name: Build and deploy Jekyll site to GitHub Pages
+
+on:
+  # 仅在博客核心文件变化时触发，忽略 README 和脚本
+  push:
+    branches: [ main, master ]
+    paths:
+      - '_posts/**'          # 博客文章
+      - '_includes/**'       # 页面组件
+      - '_layouts/**'        # 页面布局
+      - '_config.yml'        # Jekyll 配置
+      - 'assets/**'          # 静态资源（图片/样式）
+      - 'pages/**'           # 自定义页面
+    paths-ignore:
+      - 'README.md'          # 忽略 README 更新
+      - 'scripts/**'         # 忽略脚本目录
+      - '.github/workflows/update-readme.yml' # 忽略 README 工作流
+  # 保留手动触发，方便调试
+  workflow_dispatch:
+
+# 独立并发组，不和 README 更新冲突
+concurrency:
+  group: pages-jekyll-${{ github.ref }}
+  cancel-in-progress: false  # 不取消正在运行的构建，避免被中断
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 拉取完整历史，适配 Jekyll 插件
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'  # 适配 Jekyll 的 Ruby 版本
+          bundler-cache: true  # 缓存依赖，加速构建
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
