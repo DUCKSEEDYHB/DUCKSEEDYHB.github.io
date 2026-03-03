@@ -47,6 +47,13 @@ defaults:
 paginate: 5 # 首页显示5篇最新文章
 paginate_path: "/page/:num/" # 分页路径（第二页为 /page/2/）
 
+# 新增：指定导航栏页面顺序（About → 档案 → 展览）
+# 确保这三个页面按固定顺序显示在导航栏，避免自动排序混乱
+header_pages:
+  - about.md
+  - archive.md
+  - exhibition.md
+
 # ===================== 排除文件 =====================
 # Jekyll编译时忽略的文件/目录（新增templates/scripts，解决README显示问题）
 exclude:
