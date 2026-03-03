@@ -79,7 +79,7 @@ permalink: /archive/
       <span class="post-tag">#{{ tag }}</span>
       {% endfor %}
     </li>
-    {% empty %}
+    {% else %}
     <li class="post-item">暂无发布的帖子</li>
     {% endfor %}
   </ul>
@@ -94,7 +94,7 @@ permalink: /archive/
     <a href="#cat-{{ category[0] | slugify }}" class="cat-tag-btn">
       {{ category[0] }} ({{ category[1] | size }})
     </a>
-    {% empty %}
+    {% else %}
     <p>暂无分类</p>
     {% endfor %}
   </div>
@@ -120,7 +120,7 @@ permalink: /archive/
     <a href="#tag-{{ tag[0] | slugify }}" class="cat-tag-btn">
       #{{ tag[0] }} ({{ tag[1] | size }})
     </a>
-    {% empty %}
+    {% else %}
     <p>暂无标签</p>
     {% endfor %}
   </div>
@@ -152,6 +152,6 @@ function switchTab(tabName, element) {
   });
   // 显示选中内容 + 激活选中按钮
   document.getElementById(tabName).classList.add('active');
-  element.classList.add('active'); // 直接使用传入的元素，避免 event 报错
+  element.classList.add('active');
 }
 </script>
