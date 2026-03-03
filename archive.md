@@ -62,9 +62,9 @@ permalink: /archive/
 
 <!-- 切换按钮 -->
 <div class="archive-tabs">
-  <div class="archive-tab active" onclick="switchTab('time')">按时间排序</div>
-  <div class="archive-tab" onclick="switchTab('category')">按分类浏览</div>
-  <div class="archive-tab" onclick="switchTab('tag')">按标签浏览</div>
+  <div class="archive-tab active" onclick="switchTab('time', this)">按时间排序</div>
+  <div class="archive-tab" onclick="switchTab('category', this)">按分类浏览</div>
+  <div class="archive-tab" onclick="switchTab('tag', this)">按标签浏览</div>
 </div>
 
 <!-- 1. 时间排序内容（默认显示） -->
@@ -137,9 +137,9 @@ permalink: /archive/
   {% endfor %}
 </div>
 
-<!-- 切换逻辑脚本 -->
+<!-- 切换逻辑脚本（修复 event 兼容性问题） -->
 <script>
-function switchTab(tabName) {
+function switchTab(tabName, element) {
   // 隐藏所有内容
   const contents = document.querySelectorAll('.archive-content');
   contents.forEach(content => {
@@ -152,6 +152,6 @@ function switchTab(tabName) {
   });
   // 显示选中内容 + 激活选中按钮
   document.getElementById(tabName).classList.add('active');
-  event.target.classList.add('active');
+  element.classList.add('active'); // 直接使用传入的元素，避免 event 报错
 }
 </script>
