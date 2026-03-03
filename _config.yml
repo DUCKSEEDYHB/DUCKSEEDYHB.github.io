@@ -27,20 +27,25 @@ defaults:
       type: "pages"
     values:
       layout: "page"
+  # 根目录 index.md 默认使用 default 布局（新增，避免布局缺失）
+  - scope:
+      path: "index.md"
+      type: "pages"
+    values:
+      layout: "default"
+      permalink: "/"
 
 # 分页配置
 paginate: 5
 paginate_path: "/page/:num/"
 
-# 导航栏配置（改为指向 pages 目录下的文件）
-# 这里的路径是文件的实际路径，不是URL
+# 导航栏配置（只保留实际存在的文件，删除缺失的about/exhibition）
 header_pages:
-  - pages/about.md
   - pages/archive.md
-  - pages/exhibition.md
   - pages/friends.md
 
 # ===================== 排除文件 =====================
+# 移除 .github/ 排除（否则Pages工作流会被屏蔽），保留必要排除项
 exclude:
   - .sass-cache/
   - .jekyll-cache/
@@ -53,7 +58,6 @@ exclude:
   - LICENSE
   - templates/
   - scripts/
-  - .github/
 
 # ===================== Minima主题自定义 =====================
 minima:
