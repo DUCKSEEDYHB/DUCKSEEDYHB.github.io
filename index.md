@@ -1,7 +1,7 @@
 ---
-layout: default  # 改用你存在的 default 布局，避免布局不存在
+layout: default
 title: 首页
-permalink: /     # 强制渲染为根目录 index.html
+permalink: /
 ---
 
 # 欢迎来到 Duckweed's Space 📚

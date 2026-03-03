@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+<html lang="{{ page.lang | default: site.lang | default: "zh-CN" }}">
   {%- include head.html -%}
-  <head>
-    <!-- 保留原有head里的内容（从head.html引入），补充MathJax配置 -->
+  <body class="layout-{{ page.layout }}">
+    <!-- 背景视频标签（核心） -->
+    <video class="bg-video" autoplay loop muted playsinline>
+      <!-- 替换为你的视频文件路径，建议用 mp4 格式 -->
+      <source src="{{ '/assets/videos/background.mp4' | relative_url }}" type="video/mp4">
+      <!-- 视频加载失败时的兜底提示 -->
+      你的浏览器不支持视频播放，请升级浏览器。
+    </video>
+
+    {%- include header.html -%}
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        {{ content }}
+      </div>
+    </main>
+
+    {%- include footer.html -%}
+
+    <!-- 把所有脚本/样式移到 body 末尾，避免阻塞渲染 + 保留你的自定义配置 -->
+    <!-- MathJax公式渲染（仅在需要的文章页加载） -->
     {% if page.math %}
-      <!-- MathJax公式渲染（仅在需要的文章页加载） -->
       <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       <script>
         MathJax = {
@@ -30,31 +48,13 @@
         };
       </script>
     {% endif %}
-  </head>
-  <!-- 引入Font Awesome图标库（B站图标需要） -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-  <!-- 引入自定义样式 -->
-  <link rel="stylesheet" href="{{ '/assets/css/custom-bg.css' | relative_url }}">
-  <!-- 不蒜子统计脚本 -->
-  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  <!-- 🔥 关键：添加layout-xxx类名，让CSS区分页面类型 🔥 -->
-  <body class="layout-{{ page.layout }}">
-    <!-- 背景视频标签（核心） -->
-    <video class="bg-video" autoplay loop muted playsinline>
-      <!-- 替换为你的视频文件路径，建议用 mp4 格式 -->
-      <source src="{{ '/assets/videos/background.mp4' | relative_url }}" type="video/mp4">
-      <!-- 视频加载失败时的兜底提示 -->
-      你的浏览器不支持视频播放，请升级浏览器。
-    </video>
-
-    {%- include header.html -%}
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        {{ content }}
-      </div>
-    </main>
-
-    {%- include footer.html -%}
+    <!-- 引入Font Awesome图标库（B站图标需要） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <!-- 引入自定义样式（优先加载你的CSS） -->
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/header.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/custom-bg.css' | relative_url }}">
+    <!-- 不蒜子统计脚本 -->
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   </body>
 </html>

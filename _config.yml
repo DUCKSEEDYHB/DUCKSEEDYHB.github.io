@@ -6,6 +6,7 @@ description: >-
 baseurl: ""
 url: "https://Duckweed-yhb.github.io"
 timezone: Asia/Shanghai
+lang: zh-CN  # 新增：匹配你的页面语言，避免默认英文
 
 # ===================== 主题与插件配置 =====================
 theme: minima
@@ -15,19 +16,20 @@ plugins:
 
 # ===================== 内容配置 =====================
 defaults:
-  # 文章默认使用 post 布局
+  # 文章默认使用 post 布局（继承你的default布局）
   - scope:
       path: ""
       type: "posts"
     values:
       layout: "post"
-  # pages 目录下的页面默认使用 page 布局
+      math: true  # 新增：所有文章默认加载MathJax
+  # pages 目录下的页面默认使用 default 布局（你的自定义布局）
   - scope:
       path: "pages"
       type: "pages"
     values:
-      layout: "page"
-  # 根目录 index.md 默认使用 default 布局（新增，避免布局缺失）
+      layout: "default"
+  # 根目录 index.md 强制使用 default 布局（你的自定义布局）
   - scope:
       path: "index.md"
       type: "pages"
@@ -39,13 +41,12 @@ defaults:
 paginate: 5
 paginate_path: "/page/:num/"
 
-# 导航栏配置（只保留实际存在的文件，删除缺失的about/exhibition）
+# 导航栏配置（绝对无重复，彻底解决白色小框）
 header_pages:
   - pages/archive.md
   - pages/friends.md
 
 # ===================== 排除文件 =====================
-# 移除 .github/ 排除（否则Pages工作流会被屏蔽），保留必要排除项
 exclude:
   - .sass-cache/
   - .jekyll-cache/
@@ -58,10 +59,12 @@ exclude:
   - LICENSE
   - templates/
   - scripts/
+  - requirements.txt
 
 # ===================== Minima主题自定义 =====================
 minima:
-  social_links: [] # 清空内置社交链接，使用 _includes/social.html 自定义
+  social_links: [] # 清空内置社交链接，用你的自定义
+  skin: auto
 
 # ===================== 编码与格式 =====================
 encoding: utf-8
