@@ -1,9 +1,10 @@
 name: Auto Update README (Jekyll Blog)
 
-# 修复核心：paths和paths-ignore同层级放在push事件内
+# 核心修复：用否定匹配替代paths-ignore，彻底解决语法冲突
 on:
   push:
     branches: [ main, master ]
+    # 语法：! 开头表示排除，先包含再排除，完美替代原需求
     paths:
       - '_posts/**/*.md'
       - '_posts/**/*.markdown'
@@ -11,15 +12,14 @@ on:
       - 'scripts/**'
       - 'README.md'
       - '.github/workflows/**'
-    paths-ignore:
-      - '_site/**'
-      - '.jekyll-cache/**'
-      - 'vendor/**'
-  workflow_dispatch:  # 手动触发
+      - '!_site/**'          # 排除构建目录
+      - '!.jekyll-cache/**' # 排除缓存目录
+      - '!vendor/**'        # 排除依赖目录
+  workflow_dispatch:  # 手动触发（不受路径限制）
   schedule:
     - cron: '0 0 * * *'  # 每天UTC 0点（北京时间8点）更新
 
-# 并发控制：避免冲突
+# 并发控制：避免同一分支同时运行多个实例
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -27,16 +27,16 @@ concurrency:
 jobs:
   update-readme:
     runs-on: ubuntu-latest
+    # 仅主仓库运行，避免fork误触发
     if: github.repository_owner == github.actor || github.event_name == 'workflow_dispatch'
     permissions:
-      contents: write
-      pull-requests: write
-      actions: read
+      contents: write  # 必须的写入权限
+      actions: read    # 读取Action日志（排障用）
     steps:
       - name: 拉取仓库代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # 拉取完整提交历史
           token: ${{ github.token }}
           ref: ${{ github.ref }}
 
@@ -47,7 +47,7 @@ jobs:
 
       - name: 安装依赖
         run: |
-          set -e
+          set -e  # 出错立即退出
           python -m pip install --upgrade pip
           pip install --retries 3 --timeout 30 pyyaml || pip install --user pyyaml
 
@@ -66,13 +66,14 @@ jobs:
         if: steps.check_script.outputs.script_exists == 'true'
         run: |
           set -e
-          cd $GITHUB_WORKSPACE
+          cd $GITHUB_WORKSPACE  # 确保在项目根目录执行
           python scripts/generate_readme.py
+          # 验证生成结果
           if [ -f "README.md" ]; then
-            echo "✅ README.md 文件存在，生成成功！"
-            head -20 README.md
+            echo "✅ README.md 生成成功，前10行内容："
+            head -10 README.md
           else
-            echo "❌ 错误：README.md 文件生成失败！"
+            echo "❌ 错误：未生成 README.md 文件！"
             exit 1
           fi
 
@@ -80,23 +81,22 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: auto update README from Jekyll posts [skip ci]"
-          file_pattern: "README.md"
-          branch: ${{ github.ref_name }}
+          file_pattern: "README.md"  # 仅提交README，避免误操作
+          branch: ${{ github.ref_name }}  # 动态适配分支名
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           skip_fetch: true
           skip_checkout: true
-          commit_author: "GitHub Actions <actions@github.com>"
 
-      - name: 脚本不存在时的容错处理
+      - name: 脚本缺失容错处理
         if: steps.check_script.outputs.script_exists == 'false'
         run: |
-          echo "❌ 终止工作流：缺少核心生成脚本！"
+          echo "❌ 工作流终止：核心脚本 scripts/generate_readme.py 不存在！"
           exit 1
 
       - name: 工作流完成通知
         if: always()
         run: |
           echo "📝 README更新工作流执行完成！"
-          echo "状态：${{ job.status }}"
-          echo "日志链接：https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "📊 执行状态：${{ job.status }}"
+          echo "🔗 日志链接：https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
