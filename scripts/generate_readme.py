@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 def parse_jekyll_post(post_path):
-    """解析 Jekyll 博客的 Front Matter 字段"""
+    """解析 Jekyll 博客的 Front Matter 字段（移除摘要解析）"""
     try:
         with open(post_path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -18,7 +18,7 @@ def parse_jekyll_post(post_path):
         fm_content = content[fm_start+3:fm_end].strip()
         fm = yaml.safe_load(fm_content)
         
-        # 提取核心字段（兼容 Jekyll 标准）
+        # 提取核心字段（仅保留日期、标题，移除摘要）
         post_date = fm.get('date', '')
         if isinstance(post_date, datetime):
             post_date = post_date.strftime('%Y-%m-%d')
@@ -26,8 +26,6 @@ def parse_jekyll_post(post_path):
             post_date = str(post_date).split(' ')[0]  # 处理字符串格式
         
         title = fm.get('title', '无标题')
-        excerpt = fm.get('excerpt', '') or content[fm_end+3:].strip()[:80] + '...'
-        excerpt = excerpt.replace('\n', ' ').replace('|', '｜')  # 避免表格格式冲突
         
         # 生成 Jekyll 博客链接（适配默认 permalink 规则）
         filename = Path(post_path).stem
@@ -37,15 +35,14 @@ def parse_jekyll_post(post_path):
         return {
             'date': post_date,
             'title': title,
-            'url': url,
-            'excerpt': excerpt
+            'url': url  # 移除 excerpt 字段
         }
     except Exception as e:
         print(f"解析 {post_path} 失败：{e}")
         return None
 
 def generate_latest_posts(posts_dir='_posts', limit=5):
-    """读取 Jekyll _posts 目录，生成最新博客列表"""
+    """读取 Jekyll _posts 目录，生成最新博客列表（无摘要）"""
     posts = []
     for file in os.listdir(posts_dir):
         if file.endswith(('.md', '.markdown')):
@@ -56,10 +53,10 @@ def generate_latest_posts(posts_dir='_posts', limit=5):
     # 按发布日期倒序排列
     posts_sorted = sorted(posts, key=lambda x: x['date'], reverse=True)[:limit]
     
-    # 生成 Markdown 表格行
+    # 生成 Markdown 表格行（仅日期+标题）
     table_rows = []
     for post in posts_sorted:
-        table_rows.append(f"| {post['date']} | [{post['title']}]({post['url']}) | {post['excerpt']} |")
+        table_rows.append(f"| {post['date']} | [{post['title']}]({post['url']}) |")
     
     return '\n'.join(table_rows)
 
