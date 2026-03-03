@@ -19,9 +19,9 @@ on:
   schedule:
     - cron: '0 0 * * *'  # 每天UTC 0点（北京时间8点）更新
 
-# 并发控制：避免同一分支同时运行多个实例
+# 关键修改1：独立并发组，不与Pages构建冲突
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: update-readme-${{ github.ref }}  # 改名区分Pages构建的并发组
   cancel-in-progress: true
 
 jobs:
@@ -80,7 +80,8 @@ jobs:
       - name: 提交更新
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: auto update README from Jekyll posts [skip ci]"
+          # 关键修改2：加入[skip pages]跳过Pages构建，[skip ci]跳过普通CI
+          commit_message: "chore: auto update README from Jekyll posts [skip ci] [skip pages]"
           file_pattern: "README.md"  # 仅提交README，避免误操作
           branch: ${{ github.ref_name }}  # 动态适配分支名
           commit_user_name: "github-actions[bot]"
