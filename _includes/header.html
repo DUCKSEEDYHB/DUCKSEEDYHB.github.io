@@ -1,4 +1,14 @@
 <header class="site-header" role="banner">
+  <!-- 新增搜索框容器（优化样式兼容性） -->
+  <div style="max-width: 1200px; margin: 0 auto; padding: 10px 20px; position: relative;">
+    <div style="display: flex; justify-content: center; margin-bottom: 10px; flex-wrap: wrap;">
+      <input type="text" id="search-input" placeholder="搜索博客内容..." 
+             style="width: 80%; max-width: 600px; padding: 8px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; font-size: 14px; box-sizing: border-box;">
+      <button onclick="searchPosts()" style="margin-left: 10px; padding: 8px 15px; border: none; border-radius: 20px; background: #007bff; color: #fff; cursor: pointer; min-width: 80px;">搜索</button>
+    </div>
+    <!-- 搜索结果容器（优化定位和层级） -->
+    <div id="search-results" style="display: none; position: absolute; top: 50px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 600px; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 9999; box-sizing: border-box;"></div>
+  </div>
 
   <div class="wrapper">
     {%- assign default_paths = site.pages | map: "path" -%}
@@ -11,18 +21,20 @@
         <label for="nav-trigger">
           <span class="menu-icon">
             <svg viewBox="0 0 18 15" width="18px" height="15px">
-              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.484,1.484,1.484h15.032c0.817,0,1.484,0.665,1.484,1.484L18,13.516z"/>
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.484,1.484-1.484h15.032c0.817,0,1.484,0.665,1.484,1.484L18,13.516z"/>
             </svg>
           </span>
         </label>
 
         <div class="trigger">
-          <!-- 1. 优先显示 header_pages 配置的页面（关于/档案/展览） -->
           {%- for path in page_paths -%}
             {%- assign my_page = site.pages | where: "path", path | first -%}
             {%- if my_page.title -%}
-              <!-- 把 About 替换为 关于 -->
-              {%- assign nav_title = my_page.title == "About" ? "关于" : my_page.title -%}
+              {%- if my_page.title == "About" -%}
+                {%- assign nav_title = "关于" -%}
+              {%- else -%}
+                {%- assign nav_title = my_page.title -%}
+              {%- endif -%}
               <a class="page-link" href="{{ my_page.url | relative_url }}">{{ nav_title | escape }}</a>
             {%- endif -%}
           {%- endfor -%}
@@ -31,3 +43,56 @@
     {%- endif -%}
   </div>
 </header>
+
+<!-- 搜索功能脚本（优化鲁棒性，避免未定义报错） -->
+<script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.9.2/dest/simple-jekyll-search.min.js"></script>
+<script>
+// 等待页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', function() {
+  // 检查元素是否存在，避免报错
+  const searchInput = document.getElementById('search-input');
+  const resultsContainer = document.getElementById('search-results');
+  
+  if (!searchInput || !resultsContainer) return;
+
+  // 初始化搜索
+  const sjs = new SimpleJekyllSearch({
+    searchInput: searchInput,
+    resultsContainer: resultsContainer,
+    json: '{{ "/search.json" | relative_url }}', // 搜索索引文件路径
+    searchResultTemplate: '<a href="{url}" style="display: block; padding: 8px 0; color: #333; text-decoration: none; border-bottom: 1px dashed #eee;">{title}</a>',
+    noResultsText: '未找到匹配内容',
+    limit: 10,
+    fuzzy: true, // 模糊搜索
+    exclude: ['About', '档案', '展览'] // 排除非文章页面
+  });
+
+  // 搜索按钮点击事件
+  window.searchPosts = function() {
+    if (searchInput.value.trim()) {
+      resultsContainer.style.display = 'block';
+      sjs.search(searchInput.value.trim());
+    } else {
+      resultsContainer.style.display = 'none';
+    }
+  };
+
+  // 输入框回车触发搜索
+  searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      window.searchPosts();
+    }
+  });
+
+  // 点击页面空白处关闭搜索结果（优化判断逻辑）
+  document.addEventListener('click', function(e) {
+    const isClickInResults = resultsContainer.contains(e.target);
+    const isClickInInput = e.target === searchInput;
+    const isClickInButton = e.target.tagName === 'BUTTON' && e.target.onclick === window.searchPosts;
+
+    if (!isClickInResults && !isClickInInput && !isClickInButton) {
+      resultsContainer.style.display = 'none';
+    }
+  });
+});
+</script>
