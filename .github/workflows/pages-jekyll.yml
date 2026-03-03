@@ -1,20 +1,21 @@
 name: Build and deploy Jekyll site to GitHub Pages
 
 on:
-  # 仅在博客核心文件变化时触发，忽略 README 和脚本
+  # 核心修复：用否定匹配替代 paths-ignore，二选一符合语法规范
   push:
     branches: [ main, master ]
     paths:
-      - '_posts/**'          # 博客文章
-      - '_includes/**'       # 页面组件
-      - '_layouts/**'        # 页面布局
-      - '_config.yml'        # Jekyll 配置
-      - 'assets/**'          # 静态资源（图片/样式）
-      - 'pages/**'           # 自定义页面
-    paths-ignore:
-      - 'README.md'          # 忽略 README 更新
-      - 'scripts/**'         # 忽略脚本目录
-      - '.github/workflows/update-readme.yml' # 忽略 README 工作流
+      # 只触发核心博客文件的构建
+      - '_posts/**'
+      - '_includes/**'
+      - '_layouts/**'
+      - '_config.yml'
+      - 'assets/**'
+      - 'pages/**'
+      # 排除 README 和脚本相关文件，避免被自动提交触发
+      - '!README.md'
+      - '!scripts/**'
+      - '!.github/workflows/update-readme.yml'
   # 保留手动触发，方便调试
   workflow_dispatch:
 
