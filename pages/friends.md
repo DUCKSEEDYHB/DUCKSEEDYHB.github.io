@@ -75,7 +75,7 @@ permalink: /friends/
 </style>
 
 <div class="friends-container">
-  {% for friend in site.friends %}
+  {% for friend in site.data.friends %}
   <div class="friend-card">
     <h3>{{ friend.name }}</h3>
     <a href="{{ friend.url }}" target="_blank">{{ friend.url }}</a>

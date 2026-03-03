@@ -1,44 +1,62 @@
-<!-- _includes/social.html -->
+<!-- _includes/social.html - 社交媒体链接组件 -->
 <ul class="social-media-list">
-  <!-- GitHub 图标：加载本地 SVG -->
+  <!-- GitHub 图标 -->
   {%- if site.github_username -%}
   <li>
-    <a href="https://github.com/{{ site.github_username| cgi_escape | escape }}" target="_blank">
-      <!-- 本地 GitHub SVG -->
+    <a 
+      href="https://github.com/{{ site.github_username| cgi_escape | escape }}" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      aria-label="访问我的GitHub主页"
+    >
+      <!-- 本地 SVG + 容错处理 -->
       <img 
         src="{{ '/assets/images/github.svg' | relative_url }}" 
         alt="GitHub" 
         class="social-icon"
+        onerror="this.src='https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/svg/brands/github.svg'; this.alt='GitHub图标'"
       >
       <span class="username">{{ site.github_username| escape }}</span>
     </a>
   </li>
   {%- endif -%}
 
-  <!-- 知乎图标：加载本地 SVG -->
+  <!-- 知乎图标 -->
   {%- if site.zhihu_url -%}
   <li>
-    <a href="{{ site.zhihu_url }}" target="_blank">
-      <!-- 本地知乎 SVG -->
+    <a 
+      href="{{ site.zhihu_url }}" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      aria-label="访问我的知乎主页"
+    >
+      <!-- 本地 SVG + 容错处理 -->
       <img 
         src="{{ '/assets/images/zhihu.svg' | relative_url }}" 
         alt="知乎" 
         class="social-icon"
+        onerror="this.src='https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/svg/solid/comment-dots.svg'; this.alt='知乎图标'"
       >
       <span class="username">{{ site.zhihu_username | default: "知乎" | escape }}</span>
     </a>
   </li>
   {%- endif -%}
 
-  <!-- B站图标：加载本地 SVG -->
+  <!-- B站图标 -->
   {%- if site.bilibili_url -%}
   <li>
-    <a href="{{ site.bilibili_url }}" target="_blank">
-      <!-- 本地 B站 SVG -->
+    <a 
+      href="{{ site.bilibili_url }}" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      aria-label="访问我的B站主页"
+    >
+      <!-- 本地 SVG + 容错处理 -->
       <img 
         src="{{ '/assets/images/bilibili.svg' | relative_url }}" 
         alt="哔哩哔哩" 
         class="social-icon"
+        onerror="this.src='https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/svg/solid/video.svg'; this.alt='B站图标'"
       >
       <span class="username">{{ site.bilibili_username | default: "哔哩哔哩" | escape }}</span>
     </a>

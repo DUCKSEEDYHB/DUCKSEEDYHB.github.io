@@ -1,7 +1,8 @@
-<footer class="site-footer h-card">
+<!-- _includes/footer.html - 页面底部组件 -->
+<footer class="site-footer h-card" role="contentinfo">
   <data class="u-url" href="{{ "/" | relative_url }}"></data>
 
-  <!-- 移除多余的wrapper，直接使用footer-col-wrapper，减少嵌套层级 -->
+  <!-- 页脚内容容器 -->
   <div class="footer-col-wrapper">
     <!-- 第一列：站点信息 + 联系方式 -->
     <div class="footer-col footer-col-1">
@@ -16,16 +17,15 @@
         </li>
         {%- if site.email -%}
           <li>
-            <!-- 增加图标和语义化结构，提升视觉和可访问性 -->
-            <a class="u-email" href="mailto:{{ site.email }}">
+            <a class="u-email" href="mailto:{{ site.email }}" aria-label="发送邮件至{{ site.email }}">
               <i class="fas fa-envelope"></i> {{ site.email }}
             </a>
           </li>
         {%- endif -%}
-        <!-- 可选：添加站点地址/电话等额外联系方式（按需启用） -->
+        <!-- 可选：电话 -->
         {%- if site.phone -%}
           <li>
-            <a href="tel:{{ site.phone }}">
+            <a href="tel:{{ site.phone }}" aria-label="拨打电话{{ site.phone }}">
               <i class="fas fa-phone"></i> {{ site.phone }}
             </a>
           </li>
@@ -33,33 +33,44 @@
       </ul>
     </div>
 
-    <!-- 第二列：社交媒体（优化结构，增加视觉提示） -->
+    <!-- 第二列：社交媒体 -->
     <div class="footer-col footer-col-2">
-      <h2 class="footer-heading">社交链接</h2> <!-- 增加标题，提升可读性 -->
+      <h2 class="footer-heading">社交链接</h2>
       {%- include social.html -%}
     </div>
 
-    <!-- 第三列：站点描述 + 版权信息（补充核心信息） -->
+    <!-- 第三列：站点描述 + 版权信息 -->
     <div class="footer-col footer-col-3">
-      <h2 class="footer-heading">关于本站</h2> <!-- 增加标题，结构更清晰 -->
-      <p class="site-desc">{{- site.description | escape -}}</p>
-      <!-- 新增版权信息，提升专业性 -->
+      <h2 class="footer-heading">关于本站</h2>
+      <p class="site-desc">{{- site.description | default: "分享技术与生活的博客" | escape -}}</p>
+      <!-- 版权信息 -->
       <p class="copyright">
         <i class="fas fa-copyright"></i> {{ 'now' | date: "%Y" }} 
         <a href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>. 
         保留所有权利。
       </p>
-      <!-- 可选：添加备案号（国内站点推荐） -->
+      <!-- 备案号（国内站点推荐） -->
       {%- if site.beian -%}
         <p class="beian">
-          <a href="https://beian.miit.gov.cn/" target="_blank">{{ site.beian }}</a>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" aria-label="查看工信部备案信息">
+            {{ site.beian }}
+          </a>
         </p>
       {%- endif -%}
     </div>
   </div>
 
-  <!-- 底部额外提示（可选），提升用户体验 -->
+  <!-- 底部额外提示 -->
   <div class="footer-bottom">
-    <p>本站使用 <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> 构建 · 设计：{{ site.author | escape }}</p>
+    <p>
+      本站使用 <a href="https://jekyllrb.com/" target="_blank" rel="noopener noreferrer">Jekyll</a> 构建 
+      · 设计：{{ site.author | default: site.title | escape }}
+    </p>
+    <!-- 可选：添加ICP备案号重复展示（移动端更易查看） -->
+    {%- if site.beian and site.mobile_beian_show -%}
+    <p class="beian mobile-beian">
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{ site.beian }}</a>
+    </p>
+    {%- endif -%}
   </div>
 </footer>
