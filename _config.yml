@@ -85,6 +85,9 @@ highlighter: rouge
 markdown: kramdown
 kramdown:
   input: GFM
+  # 核心修复：添加2个关键配置，解析HTML标签内的Markdown
+  parse_block_html: true   # 解析块级HTML标签（div/section等）内的Markdown
+  parse_span_html: true    # 解析行内HTML标签（span/a等）内的Markdown
   syntax_highlighter_opts:
     block:
       # line_numbers: true

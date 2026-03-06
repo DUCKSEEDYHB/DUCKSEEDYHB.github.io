@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="{{ page.lang | default: site.lang | default: "zh-CN" }}">
   {%- include head.html -%}
+
+  <!-- 核心优化：把所有样式移到 head 内，确保在页面内容渲染前加载 -->
+  <head>
+    <!-- 引入Font Awesome图标库（B站图标需要） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <!-- 引入自定义样式（优先加载，确保Markdown标签渲染时样式已生效） -->
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/header.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/custom-bg.css' | relative_url }}">
+  </head>
+
   <body class="layout-{{ page.layout }}">
     <!-- 背景视频标签（核心） -->
     <video class="bg-video" autoplay loop muted playsinline>
@@ -20,7 +31,7 @@
 
     {%- include footer.html -%}
 
-    <!-- 把所有脚本/样式移到 body 末尾，避免阻塞渲染 + 保留你的自定义配置 -->
+    <!-- 脚本仍放在 body 末尾，避免阻塞渲染 -->
     <!-- MathJax公式渲染（仅在需要的文章页加载） -->
     {% if page.math %}
       <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -48,12 +59,6 @@
         };
       </script>
     {% endif %}
-    <!-- 引入Font Awesome图标库（B站图标需要） -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <!-- 引入自定义样式（优先加载你的CSS） -->
-    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
-    <link rel="stylesheet" href="{{ '/assets/css/header.css' | relative_url }}">
-    <link rel="stylesheet" href="{{ '/assets/css/custom-bg.css' | relative_url }}">
     <!-- 不蒜子统计脚本 -->
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   </body>
