@@ -1,8 +1,7 @@
 source "https://rubygems.org"
 
-# 适配 GitHub Pages（必须优先使用 github-pages 包）
+# 适配 GitHub Pages，使用官方推荐的版本
 gem "github-pages", "~> 231", group: :jekyll_plugins
-gem "jekyll", "~> 4.3.2" # 与 github-pages 231 兼容的版本
 
 # 主题
 gem "minima", "~> 2.5"
@@ -10,8 +9,8 @@ gem "minima", "~> 2.5"
 # Jekyll 插件（与 _config.yml 对应）
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
-  gem "jekyll-paginate", "~> 1.1" # 补充分页插件
-  gem "jekyll-seo-tag" # SEO 优化插件
+  gem "jekyll-paginate", "~> 1.1"
+  gem "jekyll-seo-tag"
 end
 
 # 系统兼容
