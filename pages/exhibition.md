@@ -240,7 +240,7 @@ permalink: /exhibition/
   <!-- 项目卡片 -->
   <div class="exhibition-card">
     <div class="card-icon">📂</div>
-    <h3 class="card-title" onclick="toggleCard('project')">项目</h3>
+    <h3 class="card-title" onclick="toggleCard('project', event)">项目</h3>
     <p class="card-desc">我的开发项目（按开发状态分类）</p>
     <hr class="card-divider">
     <div id="project" class="card-content">
@@ -267,7 +267,7 @@ permalink: /exhibition/
   <!-- 技能卡片 -->
   <div class="exhibition-card">
     <div class="card-icon">⚡</div>
-    <h3 class="card-title" onclick="toggleCard('skill')">技能</h3>
+    <h3 class="card-title" onclick="toggleCard('skill', event)">技能</h3>
     <p class="card-desc">我的技术栈（含入门级嵌入式）</p>
     <hr class="card-divider">
     <div id="skill" class="card-content">
@@ -294,7 +294,7 @@ permalink: /exhibition/
   <!-- 书籍卡片 -->
   <div class="exhibition-card">
     <div class="card-icon">📚</div>
-    <h3 class="card-title" onclick="toggleCard('book')">书籍</h3>
+    <h3 class="card-title" onclick="toggleCard('book', event)">书籍</h3>
     <p class="card-desc">我的阅读清单（按阅读状态分类）</p>
     <hr class="card-divider">
     <div id="book" class="card-content">
@@ -355,50 +355,71 @@ permalink: /exhibition/
 
 <!-- 交互脚本（封装为纯函数，避免全局污染） -->
 <script>
-  // 展开/收起核心函数
-  function toggleCard(cardId) {
-    if (!event) return;
-    event.stopPropagation();
+  // 展开/收起核心函数（优化参数传递，避免依赖全局event）
+  function toggleCard(cardId, event) {
+    // 阻止事件冒泡
+    if (event) event.stopPropagation();
     
+    // 获取内容容器，增加容错
     const content = document.getElementById(cardId);
-    if (!content) return;
+    if (!content) {
+      console.warn('未找到卡片内容:', cardId);
+      return;
+    }
     
-    const title = content.closest('.exhibition-card')?.querySelector('.card-title');
+    // 切换展开/收起状态
     content.classList.toggle('active');
     
     // 展开后滚动到卡片（平滑动画）
     if (content.classList.contains('active')) {
       setTimeout(() => {
-        content.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        content.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'nearest',
+          inline: 'nearest'
+        });
       }, 100);
     }
   }
 
   // 页面加载完成初始化
   document.addEventListener('DOMContentLoaded', function() {
-    // 图标点击绑定（兼容所有卡片）
+    // 图标点击绑定（兼容所有卡片，优化选择器）
     document.querySelectorAll('.card-icon').forEach(icon => {
       icon.addEventListener('click', function(e) {
         e.stopPropagation();
-        const title = this.nextElementSibling;
-        const cardId = title?.getAttribute('onclick')?.match(/'(\w+)'/)[1];
-        if (cardId) toggleCard(cardId);
+        // 从标题的onclick属性中提取cardId
+        const titleEl = this.nextElementSibling;
+        if (!titleEl || !titleEl.hasAttribute('onclick')) return;
+        
+        const onclickStr = titleEl.getAttribute('onclick');
+        const match = onclickStr.match(/toggleCard\('(\w+)',/);
+        if (match && match[1]) {
+          toggleCard(match[1], e);
+        }
       });
     });
 
-    // 初始化过渡动画
-    const allContents = document.querySelectorAll('.card-content');
+    // 初始化过渡动画（确保样式生效）
     setTimeout(() => {
-      allContents.forEach(content => {
+      document.querySelectorAll('.card-content').forEach(content => {
         content.style.transition = 'max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
       });
     }, 100);
   });
 
-  // 窗口大小变化适配
+  // 窗口大小变化适配（优化性能）
   window.addEventListener('resize', function() {
+    // 只处理已展开的卡片
     document.querySelectorAll('.card-content.active').forEach(content => {
       content.style.maxHeight = '2000px';
+    });
+  });
+
+  // 增加页面卸载时的清理，避免内存泄漏
+  window.addEventListener('beforeunload', function() {
+    document.querySelectorAll('.card-icon').forEach(icon => {
+      icon.removeEventListener('click', null);
     });
   });
 </script>

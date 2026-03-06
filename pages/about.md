@@ -6,79 +6,97 @@ permalink: /about/
 
 <!-- 统一的白框容器（和档案/展览页样式一致） -->
 <div class="page-card">
-  <!-- 标题与内容（Markdown 正常解析） -->
-  # 关于我
+  <!-- 纯 HTML 标题（替代 Markdown 的 # 号，避免解析冲突） -->
+  <h1>关于我</h1>
 
-  你好，我是 **Duckweed**，一名就读于哈尔滨工业大学（深圳）的电气工程及其自动化专业本科生，目前的研究方向是电力系统。
+  <p>你好，我是 <strong>Duckweed</strong>，一名就读于哈尔滨工业大学（深圳）的电气工程及其自动化专业本科生，目前的研究方向是电力系统。</p>
 
-  这里是我的个人空间，用于记录编程学习、考研备考和读书思考的点滴。欢迎交流！
+  <p>这里是我的个人空间，用于记录编程学习、考研备考和读书思考的点滴。欢迎交流！</p>
 
-  ---
+  <hr>
 
-  ## 🎓 专业背景
+  <h2>🎓 专业背景</h2>
 
-  - **专业方向**：电气工程及其自动化（电力系统方向）
-  - **核心领域**：电力系统分析、电力系统仿真、电气控制与PLC
-  - **学习目标**：深耕电力系统自动化，同时拓展编程与工程应用能力
+  <ul>
+    <li><strong>专业方向</strong>：电气工程及其自动化（电力系统方向）</li>
+    <li><strong>核心领域</strong>：电力系统分析、电力系统仿真、电气控制与PLC</li>
+    <li><strong>学习目标</strong>：深耕电力系统自动化，同时拓展编程与工程应用能力</li>
+  </ul>
 
-  ---
+  <hr>
 
-  ## 💻 技术栈
+  <h2>💻 技术栈</h2>
 
-  ### 专业能力
-  - 电力系统潮流计算与故障分析
-  - 电力系统继电保护原理
-  - 电气控制与PLC编程应用
+  <h3>专业能力</h3>
+  <ul>
+    <li>电力系统潮流计算与故障分析</li>
+    <li>电力系统继电保护原理</li>
+    <li>电气控制与PLC编程应用</li>
+  </ul>
 
-  ### 编程与工具
-  - **MATLAB**：电力系统仿真、数值计算
-  - **Java**：面向对象编程、后端开发基础
-  - **前端**：HTML / CSS / JavaScript 开发
-  - **Jekyll / GitHub Pages**：静态博客搭建与部署
-  - **LaTeX**：专业文档排版、考研笔记整理
+  <h3>编程与工具</h3>
+  <ul>
+    <li><strong>MATLAB</strong>：电力系统仿真、数值计算</li>
+    <li><strong>Java</strong>：面向对象编程、后端开发基础</li>
+    <li><strong>前端</strong>：HTML / CSS / JavaScript 开发</li>
+    <li><strong>Jekyll / GitHub Pages</strong>：静态博客搭建与部署</li>
+    <li><strong>LaTeX</strong>：专业文档排版、考研笔记整理</li>
+  </ul>
 
-  ---
+  <hr>
 
-  ## 📚 学习与成长
+  <h2>📚 学习与成长</h2>
 
-  ### 考研备考
-  - 数学分析、线性代数、概率论与数理统计
-  - 电力系统分析、继电保护
-  - 英语一、政治
+  <h3>考研备考</h3>
+  <ul>
+    <li>数学分析、线性代数、概率论与数理统计</li>
+    <li>电力系统分析、继电保护</li>
+    <li>英语一、政治</li>
+  </ul>
 
-  ---
+  <hr>
 
-  ## 📖 阅读清单
+  <h2>📖 阅读清单</h2>
 
-  - 《你当像鸟飞往你的山》（塔拉·韦斯特弗）
-  - 《被讨厌的勇气》（岸见一郎、古贺史健）
-  - 《悉达多》（赫尔曼·黑塞）
+  <ul>
+    <li>《你当像鸟飞往你的山》（塔拉·韦斯特弗）</li>
+    <li>《被讨厌的勇气》（岸见一郎、古贺史健）</li>
+    <li>《悉达多》（赫尔曼·黑塞）</li>
+  </ul>
 
-  ---
+  <hr>
 
-  ## 🌐 关于本网站
+  <h2>🌐 关于本网站</h2>
 
-  ### 框架
-  这个博客网络是基于 **Jekyll** 构建的，使用 **minima** 主题进行二次开发，部署于 **GitHub Pages**。
+  <h3>框架</h3>
+  <p>这个博客网络是基于 <strong>Jekyll</strong> 构建的，使用 <strong>minima</strong> 主题进行二次开发，部署于 <strong>GitHub Pages</strong>。</p>
 
-  > Jekyll 是一个简单的博客形态的静态站点生成器，适合用于构建个人博客、文档网站等静态内容站点。
+  <blockquote>
+    Jekyll 是一个简单的博客形态的静态站点生成器，适合用于构建个人博客、文档网站等静态内容站点。
+  </blockquote>
 
-  ### 字体
-  本博客使用 **Sarasa Mono SC** 等开源字体，兼顾中文显示与代码阅读体验。
+  <h3>字体</h3>
+  <p>本博客使用 <strong>Sarasa Mono SC</strong> 等开源字体，兼顾中文显示与代码阅读体验。</p>
 
-  > 本站内容仅限个人学习，如有任何侵权，请联系我以便删除。
+  <blockquote>
+    本站内容仅限个人学习，如有任何侵权，请联系我以便删除。
+  </blockquote>
 
-  ---
+  <hr>
 
-  ## 📫 联系方式
+  <h2>📫 联系方式</h2>
 
-  - **GitHub**：<a href="https://github.com/Duckweed-yhb" target="_blank">Duckweed-yhb</a>
-  - **知乎**：<a href="https://www.zhihu.com/people/54-62-1-34-68" target="_blank">待价而沽</a>
-  - **邮箱**：<a href="mailto:3071974740@qq.com">3071974740@qq.com</a>
+  <ul>
+    <li><strong>GitHub</strong>：<a href="https://github.com/Duckweed-yhb" target="_blank">Duckweed-yhb</a></li>
+    <li><strong>知乎</strong>：<a href="https://www.zhihu.com/people/54-62-1-34-68" target="_blank">待价而沽</a></li>
+    <li><strong>邮箱</strong>：<a href="mailto:3071974740@qq.com">3071974740@qq.com</a></li>
+  </ul>
 
-  ---
+  <hr>
 
-  > 持续学习，持续分享，持续成长。
+  <blockquote>
+    持续学习，持续分享，持续成长。
+  </blockquote>
 </div>
 
 <!-- 样式单独放在容器外，避免Markdown解析干扰 -->

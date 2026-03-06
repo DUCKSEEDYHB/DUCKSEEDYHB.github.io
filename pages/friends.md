@@ -4,15 +4,15 @@ title: 友链
 permalink: /friends/
 ---
 
-<!-- 标题白框容器（纯 HTML，避免 Markdown 解析冲突） -->
+<!-- 标题白框容器（纯 HTML，无任何 Markdown/模板语法混写） -->
 <div class="page-header-card">
   <h1>友链</h1>
   <p>与志同道合者同行，共赴成长之路</p>
 </div>
 
-<!-- 样式单独放在容器外，作用域完全隔离 -->
+<!-- 样式单独抽离，完全隔离 -->
 <style>
-  /* ========== 标题白框样式（和全站统一） ========== */
+  /* ========== 标题白框样式（全站统一） ========== */
   .page-header-card {
     background: rgba(255, 255, 255, 0.88);
     padding: 35px 25px;
@@ -37,7 +37,7 @@ permalink: /friends/
     margin: 0;
   }
 
-  /* ========== 内容白框样式（和全站统一） ========== */
+  /* ========== 内容白框样式（全站统一） ========== */
   .page-card {
     background: rgba(255, 255, 255, 0.88);
     padding: 35px 25px;
@@ -161,11 +161,13 @@ permalink: /friends/
   }
 </style>
 
-<!-- 友链内容容器 -->
+<!-- 友链内容容器（Liquid 模板语法仅用于数据渲染，与 HTML 结构分离） -->
 <div class="page-card">
   <div class="friends-container">
+    {% comment %} 纯 Liquid 注释，与 HTML 分离 {% endcomment %}
     {% if site.data.friends and site.data.friends.size > 0 %}
       {% for friend in site.data.friends %}
+        <!-- 纯 HTML 卡片结构，仅用 {{ }} 渲染数据 -->
         <div class="friend-card">
           <h3>{{ friend.name }}</h3>
           <a href="{{ friend.url | relative_url }}" target="_blank">{{ friend.url }}</a>
@@ -173,6 +175,7 @@ permalink: /friends/
         </div>
       {% endfor %}
     {% else %}
+      <!-- 纯 HTML 空状态，无任何模板语法混写 -->
       <div class="friends-empty">
         暂无友链，欢迎交换！
         <small>可私信我或者发送到我的邮箱添加你的博客链接～</small>

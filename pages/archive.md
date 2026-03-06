@@ -10,148 +10,6 @@ permalink: /archive/
   <h1 class="archive-h1">档案</h1>
   <p class="archive-subtitle">所有已发布帖子的汇总与分类索引</p>
 
-  <!-- 样式（内联 CSS，包裹在 style 标签内） -->
-  <style>
-    /* 页面白框容器 */
-    .page-card {
-      background: rgba(255, 255, 255, 0.88);
-      padding: 35px 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      backdrop-filter: blur(8px);
-      max-width: 1000px;
-      margin: 0 auto;
-      box-sizing: border-box;
-      line-height: 1.8;
-    }
-
-    /* 标题样式 */
-    .archive-h1 {
-      font-size: 2em;
-      font-weight: bold;
-      color: #2c3e50;
-      margin: 0 0 0.5em;
-      border-bottom: 2px solid #3498db;
-      padding-bottom: 0.5em;
-    }
-    .archive-subtitle {
-      font-size: 1em;
-      color: #7f8c8d;
-      margin-bottom: 2em;
-      line-height: 1.6;
-      margin-top: 0;
-    }
-
-    /* 切换按钮 */
-    .archive-tabs {
-      margin: 20px 0;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .archive-tab {
-      padding: 8px 20px;
-      border: 1px solid #ddd;
-      border-radius: 20px;
-      background: #fff;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .archive-tab.active {
-      background: #007bff;
-      color: #fff;
-      border-color: #007bff;
-    }
-
-    /* 内容容器 */
-    .archive-content {
-      display: none;
-      margin-top: 20px;
-    }
-    .archive-content.active {
-      display: block;
-    }
-
-    /* 帖子列表 */
-    .post-list {
-      list-style: none;
-      padding-left: 0;
-    }
-    .post-item {
-      padding: 10px 0;
-      border-bottom: 1px dashed #eee;
-    }
-    .post-tag {
-      font-size: 0.8em;
-      color: #666;
-      margin-left: 5px;
-    }
-
-    /* 分类/标签按钮 */
-    .cat-tag-btn {
-      text-decoration: none;
-      background: #e0e0e0;
-      padding: 4px 12px;
-      border-radius: 16px;
-      margin: 4px;
-      display: inline-block;
-      font-size: 0.9em;
-    }
-    .cat-tag-btn:hover {
-      background: #007bff;
-      color: #fff;
-    }
-
-    /* 暗黑模式 */
-    @media (prefers-color-scheme: dark) {
-      .page-card {
-        background: rgba(30, 30, 40, 0.88);
-      }
-      .archive-h1 {
-        color: #ecf0f1;
-        border-bottom-color: #3498db;
-      }
-      .archive-subtitle {
-        color: #bdc3c7;
-      }
-      .archive-tab {
-        background: #2c3e50;
-        border-color: #34495e;
-        color: #ecf0f1;
-      }
-      .archive-tab.active {
-        background: #007bff;
-        border-color: #007bff;
-      }
-      .cat-tag-btn {
-        background: #34495e;
-        color: #ecf0f1;
-      }
-      .post-item {
-        border-color: #34495e;
-      }
-      .post-tag {
-        color: #bdc3c7;
-      }
-    }
-
-    /* 移动端 */
-    @media (max-width: 768px) {
-      .page-card {
-        padding: 25px 15px;
-        margin: 0 10px;
-      }
-      .archive-h1 {
-        font-size: 1.8em;
-      }
-      .archive-tab {
-        flex: 1 1 auto;
-        text-align: center;
-        padding: 8px 10px;
-      }
-    }
-  </style>
-
   <!-- 切换按钮（纯 HTML） -->
   <div class="archive-tabs">
     <div class="archive-tab active" onclick="switchTab('time', this)">按时间排序</div>
@@ -228,21 +86,163 @@ permalink: /archive/
     </ul>
     {% endfor %}
   </div>
-
-  <!-- 脚本（纯 HTML，放在容器内底部） -->
-  <script>
-    function switchTab(tabName, element) {
-      // 隐藏所有内容
-      document.querySelectorAll('.archive-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      // 移除所有按钮激活态
-      document.querySelectorAll('.archive-tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      // 激活目标
-      document.getElementById(tabName).classList.add('active');
-      element.classList.add('active');
-    }
-  </script>
 </div>
+
+<!-- 样式（完全移出容器，避免解析干扰） -->
+<style>
+  /* 页面白框容器 */
+  .page-card {
+    background: rgba(255, 255, 255, 0.88);
+    padding: 35px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(8px);
+    max-width: 1000px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    line-height: 1.8;
+  }
+
+  /* 标题样式 */
+  .archive-h1 {
+    font-size: 2em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 0 0.5em;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5em;
+  }
+  .archive-subtitle {
+    font-size: 1em;
+    color: #7f8c8d;
+    margin-bottom: 2em;
+    line-height: 1.6;
+    margin-top: 0;
+  }
+
+  /* 切换按钮 */
+  .archive-tabs {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .archive-tab {
+    padding: 8px 20px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .archive-tab.active {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+  }
+
+  /* 内容容器 */
+  .archive-content {
+    display: none;
+    margin-top: 20px;
+  }
+  .archive-content.active {
+    display: block;
+  }
+
+  /* 帖子列表 */
+  .post-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  .post-item {
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+  }
+  .post-tag {
+    font-size: 0.8em;
+    color: #666;
+    margin-left: 5px;
+  }
+
+  /* 分类/标签按钮 */
+  .cat-tag-btn {
+    text-decoration: none;
+    background: #e0e0e0;
+    padding: 4px 12px;
+    border-radius: 16px;
+    margin: 4px;
+    display: inline-block;
+    font-size: 0.9em;
+  }
+  .cat-tag-btn:hover {
+    background: #007bff;
+    color: #fff;
+  }
+
+  /* 暗黑模式 */
+  @media (prefers-color-scheme: dark) {
+    .page-card {
+      background: rgba(30, 30, 40, 0.88);
+    }
+    .archive-h1 {
+      color: #ecf0f1;
+      border-bottom-color: #3498db;
+    }
+    .archive-subtitle {
+      color: #bdc3c7;
+    }
+    .archive-tab {
+      background: #2c3e50;
+      border-color: #34495e;
+      color: #ecf0f1;
+    }
+    .archive-tab.active {
+      background: #007bff;
+      border-color: #007bff;
+    }
+    .cat-tag-btn {
+      background: #34495e;
+      color: #ecf0f1;
+    }
+    .post-item {
+      border-color: #34495e;
+    }
+    .post-tag {
+      color: #bdc3c7;
+    }
+  }
+
+  /* 移动端 */
+  @media (max-width: 768px) {
+    .page-card {
+      padding: 25px 15px;
+      margin: 0 10px;
+    }
+    .archive-h1 {
+      font-size: 1.8em;
+    }
+    .archive-tab {
+      flex: 1 1 auto;
+      text-align: center;
+      padding: 8px 10px;
+    }
+  }
+</style>
+
+<!-- 脚本（完全移出容器，避免解析干扰） -->
+<script>
+  function switchTab(tabName, element) {
+    // 隐藏所有内容
+    document.querySelectorAll('.archive-content').forEach(content => {
+      content.classList.remove('active');
+    });
+    // 移除所有按钮激活态
+    document.querySelectorAll('.archive-tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    // 激活目标
+    document.getElementById(tabName).classList.add('active');
+    element.classList.add('active');
+  }
+</script>
