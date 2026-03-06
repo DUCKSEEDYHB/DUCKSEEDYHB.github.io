@@ -4,7 +4,7 @@ title: 友链
 permalink: /friends/
 ---
 
-<div class="page-card">  <!-- 包裹通用卡片，和文章页样式统一 -->
+<div class="page-card" markdown="1">  <!-- 添加 markdown="1" 解析内部 Markdown -->
   # 友链
   与志同道合者同行，共赴成长之路。
 
@@ -75,7 +75,7 @@ permalink: /friends/
     }
   </style>
 
-  <div class="friends-container">
+  <div class="friends-container" markdown="0">  <!-- 关闭该标签的 Markdown 解析（避免干扰 Liquid） -->
     {% if site.data.friends and site.data.friends.size > 0 %}
       {% for friend in site.data.friends %}
         <div class="friend-card">

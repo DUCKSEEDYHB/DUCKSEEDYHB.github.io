@@ -1,80 +1,94 @@
 ---
-layout: default  # 改为default布局，和其他页面保持一致
-title: 关于
-permalink: /about/
+layout: default
+title: 友链
+permalink: /friends/
 ---
 
-<div class="page-card">  <!-- 包裹通用卡片，和其他页面样式统一 -->
-  # 关于我
+<div class="page-card" markdown="1">  <!-- 添加 markdown="1" 解析内部 Markdown -->
+  # 友链
+  与志同道合者同行，共赴成长之路。
 
-  你好，我是 **Duckweed**，一名就读于哈尔滨工业大学（深圳）的电气工程及其自动化专业本科生，目前的研究方向是电力系统。
+  <style>
+    /* 和展览页卡片样式统一 */
+    .friends-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin: 40px 0;
+      justify-content: center;
+    }
+    
+    .friend-card {
+      flex: 1;
+      min-width: 300px;
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.88);
+      padding: 35px 25px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+    
+    .friend-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    .friend-card h3 {
+      color: #2c3e50;
+      margin: 0 0 15px;
+      font-size: 1.5em;
+    }
+    
+    .friend-card a {
+      color: #3498db;
+      text-decoration: none;
+      font-size: 1em;
+      line-height: 1.6;
+      display: block;
+      margin-bottom: 10px;
+    }
+    
+    .friend-card a:hover {
+      text-decoration: underline;
+      color: #2980b9;
+    }
+    
+    .friend-card p {
+      color: #7f8c8d;
+      font-size: 1em;
+      margin: 0;
+    }
+    
+    /* 移动端适配 */
+    @media (max-width: 768px) {
+      .friends-container {
+        gap: 20px;
+        margin: 20px 0;
+      }
+      .friend-card {
+        min-width: 90%;
+        padding: 25px 20px;
+        max-width: 100%;
+      }
+    }
+  </style>
 
-  这里是我的个人空间，用于记录编程学习、考研备考和读书思考的点滴。欢迎交流！
-
-  ---
-
-  ## 🎓 专业背景
-
-  - **专业方向**：电气工程及其自动化（电力系统方向）
-  - **核心领域**：电力系统分析、电力系统仿真、电气控制与PLC
-  - **学习目标**：深耕电力系统自动化，同时拓展编程与工程应用能力
-
-  ---
-
-  ## 💻 技术栈
-
-  ### 专业能力
-  - 电力系统潮流计算与故障分析
-  - 电力系统继电保护原理
-  - 电气控制与PLC编程应用
-
-  ### 编程与工具
-  - **MATLAB**：电力系统仿真、数值计算
-  - **Java**：面向对象编程、后端开发基础
-  - **前端**：HTML / CSS / JavaScript 开发
-  - **Jekyll / GitHub Pages**：静态博客搭建与部署
-  - **LaTeX**：专业文档排版、考研笔记整理
-
-  ---
-
-  ## 📚 学习与成长
-
-  ### 考研备考
-  - 数学分析、线性代数、概率论与数理统计
-  - 电力系统分析、继电保护
-  - 英语一、政治
-
-  ---
-
-  ## 📖 阅读清单
-
-  - 《你当像鸟飞往你的山》（塔拉·韦斯特弗）
-  - 《被讨厌的勇气》（岸见一郎、古贺史健）
-  - 《悉达多》（赫尔曼·黑塞）
-
-  ---
-
-  ## 🌐 关于本网站
-
-  ### 框架
-  这个博客网络是基于 **Jekyll** 构建的，使用 **minima** 主题进行二次开发，部署于 **GitHub Pages**。
-
-  > Jekyll 是一个简单的博客形态的静态站点生成器，适合用于构建个人博客、文档网站等静态内容站点。
-
-  ### 字体
-  本博客使用 **Sarasa Mono SC** 等开源字体，兼顾中文显示与代码阅读体验。
-
-  > 本站内容仅限个人学习，如有任何侵权，请联系我以便删除。
-
-  ---
-
-  ## 📫 联系方式
-
-  - **GitHub**：<a href="https://github.com/Duckweed-yhb" target="_blank">Duckweed-yhb</a>
-  - **知乎**：<a href="https://www.zhihu.com/people/54-62-1-34-68" target="_blank">待价而沽</a>
-  - **邮箱**：<a href="mailto:3071974740@qq.com">3071974740@qq.com</a>
-
-  ---
-
-  > 持续学习，持续分享，持续成长。
+  <div class="friends-container" markdown="0">  <!-- 关闭该标签的 Markdown 解析（避免干扰 Liquid） -->
+    {% if site.data.friends and site.data.friends.size > 0 %}
+      {% for friend in site.data.friends %}
+        <div class="friend-card">
+          <h3>{{ friend.name }}</h3>
+          <a href="{{ friend.url | relative_url }}" target="_blank">{{ friend.url }}</a>
+          <p>{{ friend.desc }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div style="color: #7f8c8d; text-align: center; padding: 40px 0; width: 100%;">
+        暂无友链，欢迎交换！<br>
+        <small style="font-size: 0.9em;">可私信我或者发送到我的邮箱添加你的博客链接～</small>
+      </div>
+    {% endif %}
+  </div>
 </div>  <!-- 闭合通用卡片 -->
