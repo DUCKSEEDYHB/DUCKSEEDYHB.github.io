@@ -4,7 +4,7 @@ title: 档案
 permalink: /archive/
 ---
 
-<div class="page-card">  <!-- 包裹通用卡片，和文章页样式统一 -->
+<div class="page-card" markdown="1">  <!-- 核心修复：添加 markdown="1" 解析内部 Markdown -->
   # 档案
   所有已发布帖子的汇总与分类索引
 
@@ -59,17 +59,22 @@ permalink: /archive/
       display: inline-block;
       font-size: 0.9em;
     }
+    .cat-tag-btn:hover {
+      background: #007bff;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
   </style>
 
   <!-- 切换按钮 -->
-  <div class="archive-tabs">
+  <div class="archive-tabs" markdown="0">  <!-- 关闭该标签的 Markdown 解析，避免干扰 HTML/JS -->
     <div class="archive-tab active" onclick="switchTab('time', this)">按时间排序</div>
     <div class="archive-tab" onclick="switchTab('category', this)">按分类浏览</div>
     <div class="archive-tab" onclick="switchTab('tag', this)">按标签浏览</div>
   </div>
 
   <!-- 1. 时间排序内容（默认显示） -->
-  <div id="time" class="archive-content active">
+  <div id="time" class="archive-content active" markdown="0">
     <h3>📅 所有帖子（按发布时间倒序）</h3>
     <ul class="post-list">
       {% for post in site.posts %}
@@ -87,7 +92,7 @@ permalink: /archive/
   </div>
 
   <!-- 2. 分类浏览内容 -->
-  <div id="category" class="archive-content">
+  <div id="category" class="archive-content" markdown="0">
     <h3>📁 分类索引</h3>
     <div style="margin: 15px 0;">
       {% assign categories = site.categories | sort %}
@@ -113,7 +118,7 @@ permalink: /archive/
   </div>
 
   <!-- 3. 标签浏览内容 -->
-  <div id="tag" class="archive-content">
+  <div id="tag" class="archive-content" markdown="0">
     <h3>🏷️ 标签索引</h3>
     <div style="margin: 15px 0;">
       {% assign tags = site.tags | sort %}
@@ -139,7 +144,7 @@ permalink: /archive/
   </div>
 
   <!-- 切换逻辑脚本（修复 event 兼容性问题） -->
-  <script>
+  <script markdown="0">  <!-- 关闭脚本标签的 Markdown 解析 -->
   function switchTab(tabName, element) {
     // 隐藏所有内容
     const contents = document.querySelectorAll('.archive-content');
