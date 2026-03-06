@@ -21,7 +21,7 @@ permalink: /archive/
   <div id="time" class="archive-content active">
     <h3>📅 所有帖子（按发布时间倒序）</h3>
     <ul class="post-list">
-      {% comment %} Liquid 注释与 HTML 分离 {% endcomment %}
+      {% comment %} 兼容 Liquid 4.x 的写法：用 else 替代 empty {% endcomment %}
       {% for post in site.posts %}
       <li class="post-item">
         {{ post.date | date: '%Y-%m-%d' }} - 
@@ -30,7 +30,7 @@ permalink: /archive/
         <span class="post-tag">#{{ tag }}</span>
         {% endfor %}
       </li>
-      {% empty %}
+      {% else %}
       <li class="post-item">暂无发布的帖子</li>
       {% endfor %}
     </ul>
@@ -45,7 +45,7 @@ permalink: /archive/
       <a href="#cat-{{ category[0] | slugify }}" class="cat-tag-btn">
         {{ category[0] }} ({{ category[1] | size }})
       </a>
-      {% empty %}
+      {% else %}
       <p class="empty-tip">暂无分类</p>
       {% endfor %}
     </div>
@@ -71,7 +71,7 @@ permalink: /archive/
       <a href="#tag-{{ tag[0] | slugify }}" class="cat-tag-btn">
         #{{ tag[0] }} ({{ tag[1] | size }})
       </a>
-      {% empty %}
+      {% else %}
       <p class="empty-tip">暂无标签</p>
       {% endfor %}
     </div>
