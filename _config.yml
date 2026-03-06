@@ -36,13 +36,14 @@ defaults:
       permalink: /posts/:title/ # 文章永久链接格式
       author: "Duckweed" # 新增：默认作者
 
-  # pages目录下页面默认配置
+  # 根目录下所有页面默认配置（关键修复：覆盖pages目录和根目录）
   - scope:
-      path: "pages"
+      path: ""
       type: "pages"
     values:
       layout: "default"
-      permalink: /:basename/ # 新增：pages页面链接格式（archive.md → /archive/）
+      render_with_liquid: true # 关键：所有页面默认解析Liquid，不转义HTML
+      permalink: /:basename/ # 页面链接格式（archive.html → /archive/）
 
   # 根目录index.md配置
   - scope:
@@ -51,25 +52,19 @@ defaults:
     values:
       layout: "default"
       permalink: "/"
-
-  # pages目录下exhibition.md配置（关键：匹配你的文件位置）
-  - scope:
-      path: "pages/exhibition.md"
-      type: "pages"
-    values:
-      layout: "default"
-      permalink: /exhibition/
+      render_with_liquid: true
 
 # 分页配置（后续启用分页插件时取消注释）
 # paginate: 5
 # paginate_path: "/page/:num/"
 
-# 导航栏配置（补充展览页，路径正确）
+# 导航栏配置（核心修复：路径匹配实际文件位置）
+# 注意：如果你的页面在根目录（archive.html），则写 "- archive.html"；如果在pages目录，写 "- pages/archive.html"
 header_pages:
-  - pages/archive.md # 档案
-  - pages/friends.md # 友链
-  - pages/about.md # 关于
-  - pages/exhibition.md # 展览（pages目录下，路径正确）
+  - archive.html # 档案（根目录.html文件）
+  - friends.html # 友链（根目录.html文件）
+  - about.html # 关于（根目录.html文件）
+  - exhibition.html # 展览（根目录.html文件）
 
 # ===================== 排除文件/目录 =====================
 exclude:
@@ -111,3 +106,6 @@ kramdown:
   syntax_highlighter_opts:
     block:
       line_numbers: false # 关闭代码行号（避免样式混乱）
+
+# ===================== 新增：搜索功能开关（匹配header.html） =====================
+has_search: false # 若未实现search.html，设为false避免报错
