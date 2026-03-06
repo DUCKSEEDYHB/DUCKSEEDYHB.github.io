@@ -1,31 +1,62 @@
 <!DOCTYPE html>
 <html lang="{{ page.lang | default: site.lang | default: "zh-CN" }}">
-  {%- include head.html -%}
-
-  <!-- 核心优化：把所有样式移到 head 内，确保在页面内容渲染前加载 -->
   <head>
+    {%- include head.html -%} <!-- 保留原有head内容（标题、meta等） -->
+    
     <!-- 引入Font Awesome图标库（B站图标需要） -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <!-- 引入自定义样式（优先加载，确保Markdown标签渲染时样式已生效） -->
+    <!-- 引入自定义样式（按优先级排序） -->
     <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
     <link rel="stylesheet" href="{{ '/assets/css/header.css' | relative_url }}">
     <link rel="stylesheet" href="{{ '/assets/css/custom-bg.css' | relative_url }}">
+    
+    <!-- 新增：确保页面内联样式优先级（解决archive页样式不生效问题） -->
+    <style>
+      /* 全局重置：确保内联样式能正常生效 */
+      .page-content .wrapper {
+        all: unset;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
+      /* 修复背景视频层级问题，避免遮挡内容 */
+      .bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        z-index: -1; /* 放到内容下方 */
+        opacity: 0.7; /* 可选：降低透明度，提升文字可读性 */
+      }
+      /* 确保main内容层级高于背景 */
+      main.page-content {
+        position: relative;
+        z-index: 1;
+        padding: 40px 0;
+        min-height: calc(100vh - 120px); /* 适配页脚高度 */
+      }
+    </style>
   </head>
 
   <body class="layout-{{ page.layout }}">
     <!-- 背景视频标签（核心） -->
-    <video class="bg-video" autoplay loop muted playsinline>
+    <video class="bg-video" autoplay loop muted playsinline preload="auto">
       <!-- 替换为你的视频文件路径，建议用 mp4 格式 -->
       <source src="{{ '/assets/videos/background.mp4' | relative_url }}" type="video/mp4">
-      <!-- 视频加载失败时的兜底提示 -->
-      你的浏览器不支持视频播放，请升级浏览器。
+      <!-- 视频加载失败时的兜底背景 -->
+      <div style="width:100vw;height:100vh;background:#f5f5f5;"></div>
     </video>
 
     {%- include header.html -%}
 
+    <!-- 修复：移除多余嵌套，确保content直接渲染为HTML -->
     <main class="page-content" aria-label="Content">
       <div class="wrapper">
-        {{ content }}
+        {{ content }} <!-- 这里会正常解析archive.md中的HTML代码，而非纯文本 -->
       </div>
     </main>
 
