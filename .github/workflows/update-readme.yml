@@ -1,44 +1,39 @@
 name: Auto Update README (Jekyll Blog)
 
-# 核心修复：用否定匹配替代paths-ignore，彻底解决语法冲突
 on:
   push:
     branches: [ main, master ]
-    # 语法：! 开头表示排除，先包含再排除，完美替代原需求
     paths:
       - '_posts/**/*.md'
       - '_posts/**/*.markdown'
       - 'templates/**'
       - 'scripts/**'
       - 'README.md'
-      - '.github/workflows/**'
-      - '!_site/**'          # 排除构建目录
-      - '!.jekyll-cache/**' # 排除缓存目录
-      - '!vendor/**'        # 排除依赖目录
-  workflow_dispatch:  # 手动触发（不受路径限制）
+      # 移除 .github/workflows/**，避免修改工作流时无限触发
+      - '!_site/**'
+      - '!.jekyll-cache/**'
+      - '!vendor/**'
+  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'  # 每天UTC 0点（北京时间8点）更新
+    - cron: '0 0 * * *'
 
-# 关键修改1：独立并发组，不与Pages构建冲突
 concurrency:
-  group: update-readme-${{ github.ref }}  # 改名区分Pages构建的并发组
+  group: update-readme-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   update-readme:
     runs-on: ubuntu-latest
-    # 仅主仓库运行，避免fork误触发
     if: github.repository_owner == github.actor || github.event_name == 'workflow_dispatch'
     permissions:
-      contents: write  # 必须的写入权限
-      actions: read    # 读取Action日志（排障用）
+      contents: write
+      actions: read
     steps:
       - name: 拉取仓库代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 拉取完整提交历史
+          fetch-depth: 0
           token: ${{ github.token }}
-          ref: ${{ github.ref }}
 
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
@@ -47,43 +42,35 @@ jobs:
 
       - name: 安装依赖
         run: |
-          set -e  # 出错立即退出
+          set -e
           python -m pip install --upgrade pip
-          pip install --retries 3 --timeout 30 pyyaml || pip install --user pyyaml
+          pip install --retries 3 --timeout 30 pyyaml
 
       - name: 检查生成脚本是否存在
         id: check_script
         run: |
           if [ -f "scripts/generate_readme.py" ]; then
             echo "script_exists=true" >> $GITHUB_OUTPUT
-            echo "✅ 找到生成脚本：scripts/generate_readme.py"
           else
             echo "script_exists=false" >> $GITHUB_OUTPUT
-            echo "❌ 错误：scripts/generate_readme.py 文件不存在！"
           fi
 
       - name: 生成 README 内容
         if: steps.check_script.outputs.script_exists == 'true'
         run: |
           set -e
-          cd $GITHUB_WORKSPACE  # 确保在项目根目录执行
           python scripts/generate_readme.py
-          # 验证生成结果
-          if [ -f "README.md" ]; then
-            echo "✅ README.md 生成成功，前10行内容："
-            head -10 README.md
-          else
-            echo "❌ 错误：未生成 README.md 文件！"
+          if [ ! -f "README.md" ]; then
+            echo "❌ 未生成 README.md 文件！"
             exit 1
           fi
 
       - name: 提交更新
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          # 关键修改2：加入[skip pages]跳过Pages构建，[skip ci]跳过普通CI
           commit_message: "chore: auto update README from Jekyll posts [skip ci] [skip pages]"
-          file_pattern: "README.md"  # 仅提交README，避免误操作
-          branch: ${{ github.ref_name }}  # 动态适配分支名
+          file_pattern: "README.md"
+          branch: ${{ github.ref_name }}
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           skip_fetch: true
@@ -94,10 +81,3 @@ jobs:
         run: |
           echo "❌ 工作流终止：核心脚本 scripts/generate_readme.py 不存在！"
           exit 1
-
-      - name: 工作流完成通知
-        if: always()
-        run: |
-          echo "📝 README更新工作流执行完成！"
-          echo "📊 执行状态：${{ job.status }}"
-          echo "🔗 日志链接：https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -1,7 +1,6 @@
 name: Build and deploy Jekyll site to GitHub Pages
 
 on:
-  # 核心修复：用否定匹配替代 paths-ignore，二选一符合语法规范
   push:
     branches: [ main, master ]
     paths:
@@ -12,18 +11,16 @@ on:
       - '_config.yml'
       - 'assets/**'
       - 'pages/**'
-      - 'index.md'  # 新增：确保首页修改触发构建
+      - 'index.md'
       # 排除 README 和脚本相关文件，避免被自动提交触发
       - '!README.md'
       - '!scripts/**'
       - '!.github/workflows/update-readme.yml'
-  # 保留手动触发，方便调试
-  workflow_dispatch:
+  workflow_dispatch:  # 保留手动触发，方便调试
 
-# 独立并发组，不和 README 更新冲突
 concurrency:
   group: pages-jekyll-${{ github.ref }}
-  cancel-in-progress: false  # 不取消正在运行的构建，避免被中断
+  cancel-in-progress: true  # 改为 true，避免旧构建排队
 
 jobs:
   build:
@@ -31,18 +28,18 @@ jobs:
     permissions:
       contents: read
       pages: write
-      id-token: write  # 构建阶段需要的身份令牌权限
+      id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 拉取完整历史，适配 Jekyll 插件
+          fetch-depth: 0
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'  # 适配 Jekyll 的 Ruby 版本
-          bundler-cache: true  # 缓存依赖，加速构建
+          ruby-version: '3.2'
+          bundler-cache: true
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -59,7 +56,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    permissions:  # 核心修复：给部署阶段添加必要权限
+    permissions:
       pages: write
       id-token: write
     environment:
