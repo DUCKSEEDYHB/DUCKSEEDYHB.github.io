@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      # 只触发核心博客文件的构建
       - '_posts/**'
       - '_includes/**'
       - '_layouts/**'
@@ -12,57 +11,55 @@ on:
       - 'assets/**'
       - 'pages/**'
       - 'index.md'
-      # 排除 README 和脚本相关文件，避免被自动提交触发
       - '!README.md'
       - '!scripts/**'
       - '!.github/workflows/update-readme.yml'
-  workflow_dispatch:  # 保留手动触发，方便调试
+  workflow_dispatch:
 
 concurrency:
   group: pages-jekyll-${{ github.ref }}
-  cancel-in-progress: true  # 改为 true，避免旧构建排队
+  cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pages: write
-      id-token: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
+      contents: write  # 修复：增加contents.write权限
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Ruby 3.1（适配GitHub Pages官方版本）
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'  # 关键修复：从3.2改为3.1
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: bundle install --path vendor/bundle
+
+      - name: Build Jekyll site（手动构建，替代官方动作）
+        run: bundle exec jekyll build --trace --baseurl ""
+        env:
+          JEKYLL_ENV: production
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          token: ${{ github.token }}  # 显式传递token，修复部署权限
