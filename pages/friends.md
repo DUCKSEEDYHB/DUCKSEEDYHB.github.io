@@ -76,17 +76,19 @@ permalink: /friends/
   </style>
 
   <div class="friends-container">
-    {% for friend in site.data.friends %}
-    <div class="friend-card">
-      <h3>{{ friend.name }}</h3>
-      <a href="{{ friend.url }}" target="_blank">{{ friend.url }}</a>
-      <p>{{ friend.desc }}</p>
-    </div>
+    {% if site.data.friends and site.data.friends.size > 0 %}
+      {% for friend in site.data.friends %}
+        <div class="friend-card">
+          <h3>{{ friend.name }}</h3>
+          <a href="{{ friend.url | relative_url }}" target="_blank">{{ friend.url }}</a>
+          <p>{{ friend.desc }}</p>
+        </div>
+      {% endfor %}
     {% else %}
-    <div style="color: #7f8c8d; text-align: center; padding: 40px 0; width: 100%;">
-      暂无友链，欢迎交换！<br>
-      <small style="font-size: 0.9em;">可私信我或者发送到我的邮箱添加你的博客链接～</small>
-    </div>
-    {% endfor %}
+      <div style="color: #7f8c8d; text-align: center; padding: 40px 0; width: 100%;">
+        暂无友链，欢迎交换！<br>
+        <small style="font-size: 0.9em;">可私信我或者发送到我的邮箱添加你的博客链接～</small>
+      </div>
+    {% endif %}
   </div>
 </div>  <!-- 闭合通用卡片 -->
