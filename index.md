@@ -11,16 +11,16 @@ permalink: /
   <h2>最新笔记</h2>
   <ul>
     {% for post in site.posts limit:5 %}
-    <li><a href="{{ post.url }}">{{ post.title }}</a> - {{ post.date | date: "%Y-%m-%d" }}</li>
+      <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a> - {{ post.date | date: "%Y-%m-%d" }}</li>
     {% empty %}
-    <li>暂无发布的笔记</li>
+      <li>暂无发布的笔记</li>
     {% endfor %}
   </ul>
 
   <h2>快速导航</h2>
   <ul>
-    <li><a href="/archive/">文章归档</a></li>
-    <li><a href="/friends/">友链页面</a></li>
-    <li><a href="/about/">关于我</a></li>
+    <li><a href="{{ "/archive/" | relative_url }}">文章归档</a></li>
+    <li><a href="{{ "/friends/" | relative_url }}">友链页面</a></li>
+    <li><a href="{{ "/about/" | relative_url }}">关于我</a></li>
   </ul>
 </div>
