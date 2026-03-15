@@ -14,6 +14,7 @@ bilibili_url: "https://space.bilibili.com/3546703303019495"  # 根级配置
 bilibili_username: "Duckweed"
 logo: "/assets/images/bg.jpg" # 新增：站点logo（可选）
 favicon: "/assets/images/bg.jpg" # 新增：浏览器标签页图标
+markdown_ext: "markdown,md" # 新增：关键！识别.markdown和.md后缀
 
 # ===================== 主题与插件配置 =====================
 theme: minima
@@ -33,7 +34,8 @@ defaults:
     values:
       layout: "post"
       math: true # 所有文章默认加载MathJax
-      permalink: /posts/:title/ # 文章永久链接格式
+      # 注释掉全局permalink，允许文章手动自定义
+      # permalink: /posts/:title/ 
       author: "Duckweed" # 新增：默认作者
 
   # 根目录下所有页面默认配置（关键修复：覆盖pages目录和根目录）
