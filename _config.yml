@@ -33,7 +33,7 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      math: true # 所有文章默认加载MathJax
+      math: false  # 修复1：先关闭MathJax，避免加载失败阻塞构建
       # 注释掉全局permalink，允许文章手动自定义
       # permalink: /posts/:title/ 
       author: "Duckweed" # 新增：默认作者
@@ -44,7 +44,7 @@ defaults:
       type: "pages"
     values:
       layout: "default"
-      render_with_liquid: true # 关键：所有页面默认解析Liquid，不转义HTML
+      render_with_liquid: false  # 修复2：关闭Liquid解析，避免LaTeX代码被误解析
       permalink: /:basename/ # 页面链接格式（archive.html → /archive/）
 
   # 根目录index.md配置
@@ -54,19 +54,18 @@ defaults:
     values:
       layout: "default"
       permalink: "/"
-      render_with_liquid: true
+      render_with_liquid: false  # 同步修复：关闭Liquid解析
 
 # 分页配置（后续启用分页插件时取消注释）
 # paginate: 5
 # paginate_path: "/page/:num/"
 
-# 导航栏配置（核心修复：路径匹配实际文件位置）
-# 注意：如果你的页面在根目录（archive.html），则写 "- archive.html"；如果在pages目录，写 "- pages/archive.html"
-header_pages:
-  - archive.html # 档案（根目录.html文件）
-  - friends.html # 友链（根目录.html文件）
-  - about.html # 关于（根目录.html文件）
-  - exhibition.html # 展览（根目录.html文件）
+# 导航栏配置（修复3：注释掉，先保证文章显示，后续再加）
+# header_pages:
+#   - archive.html # 档案（根目录.html文件）
+#   - friends.html # 友链（根目录.html文件）
+#   - about.html # 关于（根目录.html文件）
+#   - exhibition.html # 展览（根目录.html文件）
 
 # ===================== 排除文件/目录 =====================
 exclude:

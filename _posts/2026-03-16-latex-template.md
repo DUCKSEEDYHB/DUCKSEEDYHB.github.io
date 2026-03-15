@@ -5,7 +5,6 @@ date:   2026-03-16 21:00:00 +0800
 categories: [工具分享, LaTeX]
 tags: [LaTeX, 多文件模板, 课程笔记, 排版]
 author: Duckweed
-permalink: /latex-template-share/
 ---
 {% raw %}
 
@@ -175,5 +174,3 @@ $$ \oint_C \frac{f(z)}{z - z_0} dz = 2\pi i \cdot f(z_0) $$
 📧 3071974740@qq.com
 
 {% endraw %}
-```
-
